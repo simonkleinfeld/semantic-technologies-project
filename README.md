@@ -16,4 +16,4 @@ An UI with an input field for a question is provided. Below this input field fol
 Technical aspects:
 * Programming language: Python
 * UI Framework/Graph Framework: Dash-Plotly
-* NLP Framework: spacy or stanza
+* NLP Framework: spacy
