@@ -57,7 +57,7 @@ app.layout = html.Div([
 
 @app.callback(
     Input('submit-button', 'n_clicks'),
-    Output('output-entity', 'children'),
+    Output('output-entity', 'data'),
     State('input-field', 'value')
 )
 def update_output_entity(n_clicks, value):
@@ -67,7 +67,7 @@ def update_output_entity(n_clicks, value):
 
 @app.callback(
     Input('submit-button', 'n_clicks'),
-    Output('output-dependency', 'children'),
+    Output('output-dependency', 'src'),
     State('input-field', 'value')
 )
 def update_output_dependency(n_clicks, value):
