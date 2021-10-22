@@ -3,6 +3,8 @@ This repository contains code for the project of the course SE Research Seminar:
 
 An UI with an input field for a question is provided. Below this input field following features are provided:
 
+
+Tasks:
 * List all named entities
 * Display a dependency graph 
 * Show sub-graph of an RDF graph around topic entity of question
@@ -10,8 +12,13 @@ An UI with an input field for a question is provided. Below this input field fol
 * Do graph matching with the question graph over the RDF graph either as done in gAnswer or similiar approaches or our own
 * Display top-k matching subgraphs 
 * Optional: Make top-k matching subgraphs interactable
+* Optional: Do evaluation of results
 * Optional: Form natural language answer from top-k matching subgraphs
 * Optional: Support multiple forms of RDF graphs
+
+Open Issues:
+* Matching/Generation approach
+* Datasets 
 
 Technical aspects:
 * Programming language: Python
