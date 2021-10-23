@@ -30,7 +30,7 @@ app.layout = html.Div([
                 style={'width': 300, 'height': 25},
             ),
             html.Button('Submit', id='submit-button', n_clicks=0,
-                        style={'height': 31, 'margin-left': '8px', 'vertical-align': 'top'}),
+                        style={'height': 31, 'margin-left': '8px', 'vertical-align': 'top'}, disabled=True),
 
         ]),
     html.Div(
@@ -56,6 +56,14 @@ app.layout = html.Div([
 
 
 @app.callback(
+    Input('input-field', 'value'),
+    Output('submit-button', 'disabled'),
+)
+def enable_disable_button(input_value):
+    return len(input_value) == 0
+
+
+@app.callback(
     Input('submit-button', 'n_clicks'),
     Output('output-entity', 'data'),
     State('input-field', 'value')
@@ -67,7 +75,7 @@ def update_output_entity(n_clicks, value):
 
 @app.callback(
     Input('submit-button', 'n_clicks'),
-    Output('output-dependency', 'src'),
+    Output('output-dependency', 'elements'),
     State('input-field', 'value')
 )
 def update_output_dependency(n_clicks, value):

@@ -1,6 +1,5 @@
 import spacy
 from dash import dcc, html, dash_table
-from spacy.util import to_dict
 
 nlp = spacy.load("en_core_web_sm")
 columns = ["Text", "Start", "End", "Label"]
