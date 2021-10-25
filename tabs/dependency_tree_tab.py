@@ -1,26 +1,28 @@
 import dash_cytoscape as cyto
 import spacy
-from dash import dcc
+from dash import dcc, html
 
 nlp = spacy.load("en_core_web_sm")
 
 dependency_tab = dcc.Tab(label='Dependency Tree', children=[
-    cyto.Cytoscape(
-        id='output-dependency',
-        elements=[],
-        layout={
-            'name': 'breadthfirst'
-        },
-        style={
-            'height': 'calc(100vh - 200px)',
-            'width': '100vh',
-            'margin': 8
-        },
-        stylesheet=[
-            {'selector': 'edge', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
-            {'selector': 'node', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
-        ]
-    )
+    html.Div(id='output-dependency-div', style={'margin': 8, 'height': 'calc(100vh - 200px)',
+                                                'width': '100vh', }, children=[
+        cyto.Cytoscape(
+            id='output-dependency',
+            elements=[],
+            layout={
+                'name': 'breadthfirst'
+            },
+            style={
+              "width": "100%",
+              "height": "100%"
+            },
+            stylesheet=[
+                {'selector': 'edge', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
+                {'selector': 'node', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
+            ]
+        )
+    ])
 ])
 
 

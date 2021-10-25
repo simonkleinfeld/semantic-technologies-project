@@ -30,13 +30,13 @@ app.layout = html.Div([
                 style={'width': 300, 'height': 25},
             ),
             html.Button('Submit', id='submit-button', n_clicks=0,
-                        style={'height': 31, 'margin-left': '8px', 'vertical-align': 'top'}, disabled=True),
+                        style={'height': 31, 'marginLeft': '8px', 'verticalAlign': 'top'}, disabled=True),
 
         ]),
     html.Div(
         style={
             'textAlign': 'center',
-            'margin-top': 8
+            'marginTop': 8
         },
         children=[
             dcc.Tabs(
