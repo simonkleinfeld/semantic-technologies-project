@@ -94,13 +94,21 @@ def update_output_knowledge(n_clicks, value):
 
 
 @app.callback(
-    Input('submit-button', 'n_clicks'),
-    Output('output-question', 'children'),
-    State('input-field', 'value')
+    Input('question-tree-button-1', 'n_clicks'),
+    Output('question-graph', 'elements'),
 )
-def update_output_question(n_clicks, value):
+def update_output_question(n_clicks):
     if n_clicks > 0:
-        return create_question_content(value)
+        return create_question_content("resources/question_1.nxhd")
+
+
+@app.callback(
+    Input('question-tree-button-2', 'n_clicks'),
+    Output('question-graph', 'elements'),
+)
+def update_output_question(n_clicks):
+    if n_clicks > 0:
+        return create_question_content("resources/question_2.nxhd")
 
 
 if __name__ == '__main__':

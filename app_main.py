@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-import dash
-import dash_cytoscape as cyto
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import State
-from dash_extensions.enrich import Output, DashProxy, Input, MultiplexerTransform
 import json
 import random
 
+import dash_core_components as dcc
+import dash_cytoscape as cyto
+import dash_html_components as html
+from dash.dependencies import State
+from dash_extensions.enrich import Output, DashProxy, Input, MultiplexerTransform
+
+from tabs.question_graph_tab import create_question_content
 
 app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform()])
-
 
 styles = {
     'json-output': {
@@ -27,14 +27,18 @@ app.layout = html.Div([
     html.Div(className='eight columns', children=[
         cyto.Cytoscape(
             id='cytoscape',
-            elements={},
+            elements=create_question_content("resources/question_2.nxhd"),
             layout={
-                'name': 'grid'
+                'name': 'concentric'
             },
             style={
                 'height': '95vh',
                 'width': '100%'
-            }
+            },
+            stylesheet=[
+                {'selector': 'edge', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
+                {'selector': 'node', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
+            ]
         )
     ]),
 
@@ -63,6 +67,7 @@ app.layout = html.Div([
 
     ])
 ])
+
 
 @app.callback(Output('cytoscape', 'elements'),
               [Input('submit_button', 'n_clicks')])
