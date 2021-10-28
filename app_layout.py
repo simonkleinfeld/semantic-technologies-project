@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from dash import dcc, html, Output, Input, State
+import re
+
+from dash import dcc, html, Output, Input
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
+from select_question import question_select
 from tabs.dependency_tree_tab import dependency_tab, create_dependency_content
 from tabs.entity_names_tab import entity_tab, create_entity_content
 from tabs.knowledge_graph_tab import knowledge_graph_tab, create_knowledge_content
@@ -23,15 +26,7 @@ app.layout = html.Div([
         },
         children=
         [
-            dcc.Textarea(
-                id='input-field',
-                placeholder='Enter question',
-                wrap="false",
-                style={'width': 300, 'height': 25},
-            ),
-            html.Button('Submit', id='submit-button', n_clicks=0,
-                        style={'height': 31, 'marginLeft': '8px', 'verticalAlign': 'top'}, disabled=True),
-
+            question_select
         ]),
     html.Div(
         style={
@@ -55,42 +50,41 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(
-    Input('input-field', 'value'),
-    Output('submit-button', 'disabled'),
-)
-def enable_disable_button(input_value):
-    return len(input_value) == 0
+def get_label_and_keywords(question):
+    print('question', question)
+    regex = "<(.*)>\s<(.*)>"
+    if (res := re.match(regex, question)) is not None:
+        gr = res.groups()
+        question = gr[0]
+        keywords = gr[1]
+        return question, keywords
 
 
 @app.callback(
-    Input('submit-button', 'n_clicks'),
+    Input('input-dropdown', 'value'),
     Output('output-entity', 'data'),
-    State('input-field', 'value')
 )
-def update_output_entity(n_clicks, value):
-    if n_clicks > 0:
-        return create_entity_content(value)
+def update_output_entity(value):
+    label, _ = get_label_and_keywords(value)
+    return create_entity_content(label)
 
 
 @app.callback(
-    Input('submit-button', 'n_clicks'),
+    Input('input-dropdown', 'value'),
     Output('output-dependency', 'elements'),
-    State('input-field', 'value')
 )
-def update_output_dependency(n_clicks, value):
-    if n_clicks > 0:
-        return create_dependency_content(value)
+def update_output_dependency(value):
+    label, _ = get_label_and_keywords(value)
+    return create_dependency_content(label)
 
 
 @app.callback(
-    Input('submit-button', 'n_clicks'),
+    Input('input-dropdown', 'value'),
     Output('output-knowledge', 'children'),
-    State('input-field', 'value')
 )
-def update_output_knowledge(n_clicks, value):
-    if n_clicks > 0:
-        return create_knowledge_content(value)
+def update_output_knowledge(value):
+    label, keywords = get_label_and_keywords(value)
+    return create_knowledge_content(label, keywords)
 
 
 @app.callback(
