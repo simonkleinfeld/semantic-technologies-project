@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import re
+import json
 
-from dash import dcc, html, Output, Input
+from dash import dcc, html, Output, Input, State
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
 from select_question import question_select
@@ -26,12 +26,21 @@ app.layout = html.Div([
         },
         children=
         [
-            question_select
+            question_select,
+            dcc.Textarea(
+                id='input-field',
+                placeholder='Enter question',
+                wrap="false",
+                style={'width': 300, 'height': 25, 'margin': 8},
+            ),
+            html.Button('Submit', id='submit-button', n_clicks=0,
+                        style={'height': 31, 'margin': '8px', 'verticalAlign': 'top'}, disabled=True),
+            html.Button('Add to list', id='add-button', n_clicks=0,
+                        style={'height': 31, 'margin': '8px', 'verticalAlign': 'top'}, disabled=True)
         ]),
     html.Div(
         style={
             'textAlign': 'center',
-            'marginTop': 8
         },
         children=[
             dcc.Tabs(
@@ -50,14 +59,14 @@ app.layout = html.Div([
 ])
 
 
-def get_label_and_keywords(question):
-    print('question', question)
-    regex = "<(.*)>\s<(.*)>"
-    if (res := re.match(regex, question)) is not None:
-        gr = res.groups()
-        question = gr[0]
-        keywords = gr[1]
-        return question, keywords
+@app.callback(
+    Input('input-field', 'value'),
+    Output('submit-button', 'disabled'),
+    Output('add-button', 'disabled'),
+)
+def enable_disable_button(input_value):
+    disabled = len(input_value) == 0
+    return disabled, disabled
 
 
 @app.callback(
@@ -65,8 +74,7 @@ def get_label_and_keywords(question):
     Output('output-entity', 'data'),
 )
 def update_output_entity(value):
-    label, _ = get_label_and_keywords(value)
-    return create_entity_content(label)
+    return create_entity_content(value)
 
 
 @app.callback(
@@ -74,8 +82,7 @@ def update_output_entity(value):
     Output('output-dependency', 'elements'),
 )
 def update_output_dependency(value):
-    label, _ = get_label_and_keywords(value)
-    return create_dependency_content(label)
+    return create_dependency_content(value)
 
 
 @app.callback(
@@ -83,8 +90,7 @@ def update_output_dependency(value):
     Output('output-knowledge', 'children'),
 )
 def update_output_knowledge(value):
-    label, keywords = get_label_and_keywords(value)
-    return create_knowledge_content(label, keywords)
+    return create_knowledge_content(value)
 
 
 @app.callback(
@@ -103,6 +109,55 @@ def update_output_question(n_clicks):
 def update_output_question(n_clicks):
     if n_clicks > 0:
         return create_question_content("resources/question_2.nxhd")
+
+
+@app.callback(
+    Input('submit-button', 'n_clicks'),
+    Output('output-entity', 'data'),
+    State('input-field', 'value')
+)
+def update_output_entity(n_clicks, value):
+    if n_clicks > 0:
+        return create_entity_content(value)
+
+
+@app.callback(
+    Input('submit-button', 'n_clicks'),
+    Output('output-dependency', 'elements'),
+    State('input-field', 'value')
+)
+def update_output_dependency(n_clicks, value):
+    if n_clicks > 0:
+        return create_dependency_content(value)
+
+
+@app.callback(
+    Input('submit-button', 'n_clicks'),
+    Output('output-knowledge', 'children'),
+    State('input-field', 'value')
+)
+def update_output_knowledge(n_clicks, value):
+    if n_clicks > 0:
+        return create_knowledge_content(value)
+
+
+@app.callback(
+    Input('add-button', 'n_clicks'),
+    Output('input-dropdown', 'options'),
+    Output('input-dropdown', 'value'),
+    State('input-field', 'value'),
+    State('input-dropdown', 'options')
+)
+def update_output_knowledge(n_clicks, value, options):
+    if n_clicks > 0:
+        options.append({'label': value, 'value': value})
+        questions = []
+        for option in options:
+            questions.append(option['value'])
+        data = {'questions': questions}
+        with open('resources/questions.json', 'w', encoding='utf8') as outfile:
+            json.dump(data, outfile)
+        return options, value
 
 
 if __name__ == '__main__':

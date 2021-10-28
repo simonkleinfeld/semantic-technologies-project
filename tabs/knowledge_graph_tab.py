@@ -5,5 +5,5 @@ knowledge_graph_tab = dcc.Tab(label='Knowledge Graph', children=[
 ])
 
 
-def create_knowledge_content(question, keywords):
-    return 'You have entered to knowledge graph: {0} Keywords: {1}'.format(question, keywords)
+def create_knowledge_content(question):
+    return 'You have entered to knowledge graph: {}'.format(question)
