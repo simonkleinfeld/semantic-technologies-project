@@ -1,8 +1,5 @@
 import dash_cytoscape as cyto
-import spacy
 from dash import dcc, html
-
-nlp = spacy.load("en_core_web_sm")
 
 dependency_tab = dcc.Tab(label='Dependency Tree', children=[
     html.Div(id='output-dependency-div', style={'margin': 8, 'height': 'calc(100vh - 200px)',
@@ -14,8 +11,8 @@ dependency_tab = dcc.Tab(label='Dependency Tree', children=[
                 'name': 'breadthfirst'
             },
             style={
-              "width": "100%",
-              "height": "100%"
+                "width": "100%",
+                "height": "100%"
             },
             stylesheet=[
                 {'selector': 'edge', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
@@ -26,9 +23,7 @@ dependency_tab = dcc.Tab(label='Dependency Tree', children=[
 ])
 
 
-def create_dependency_content(question):
-    doc = nlp(question)
-
+def create_dependency_content(doc):
     nodes = []
     for token in doc:
         nodes.append({'data': {'id': token.text, 'label': '{0}'.format(token.text)}})

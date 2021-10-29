@@ -11,9 +11,7 @@ entity_tab = dcc.Tab(label='Entity Names', children=[
 ])
 
 
-def create_entity_content(question):
-    doc = nlp(question)
-
+def create_entity_content(doc):
     res = []
     for e in doc.ents:
         res.append({

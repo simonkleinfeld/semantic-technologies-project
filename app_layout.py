@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 import json
 
+import spacy
 from dash import dcc, html, Output, Input, State
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
 from select_question import question_select
 from tabs.dependency_tree_tab import dependency_tab, create_dependency_content
 from tabs.entity_names_tab import entity_tab, create_entity_content
+from tabs.keywords_tab import keywords_tab, create_keywords_content
 from tabs.knowledge_graph_tab import knowledge_graph_tab, create_knowledge_content
 from tabs.question_graph_tab import question_graph_tab, create_question_content
 
 app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform()])
+
+nlp = spacy.load("en_core_web_sm")
 
 app.title = "Question understanding interface"
 app.layout = html.Div([
@@ -47,6 +51,7 @@ app.layout = html.Div([
                 children=[
                     entity_tab,
                     dependency_tab,
+                    keywords_tab,
                     question_graph_tab,
                     knowledge_graph_tab
                 ]
@@ -70,30 +75,6 @@ def enable_disable_button(input_value):
 
 
 @app.callback(
-    Input('input-dropdown', 'value'),
-    Output('output-entity', 'data'),
-)
-def update_output_entity(value):
-    return create_entity_content(value)
-
-
-@app.callback(
-    Input('input-dropdown', 'value'),
-    Output('output-dependency', 'elements'),
-)
-def update_output_dependency(value):
-    return create_dependency_content(value)
-
-
-@app.callback(
-    Input('input-dropdown', 'value'),
-    Output('output-knowledge', 'children'),
-)
-def update_output_knowledge(value):
-    return create_knowledge_content(value)
-
-
-@app.callback(
     Input('question-tree-button-1', 'n_clicks'),
     Output('question-graph', 'elements'),
 )
@@ -111,34 +92,37 @@ def update_output_question(n_clicks):
         return create_question_content("resources/question_2.nxhd")
 
 
+def create_outputs(question):
+    doc = nlp(question)
+
+    return create_entity_content(doc), \
+           create_dependency_content(doc), \
+           create_keywords_content(question), \
+           create_knowledge_content(question)
+
+
 @app.callback(
     Input('submit-button', 'n_clicks'),
     Output('output-entity', 'data'),
-    State('input-field', 'value')
-)
-def update_output_entity(n_clicks, value):
-    if n_clicks > 0:
-        return create_entity_content(value)
-
-
-@app.callback(
-    Input('submit-button', 'n_clicks'),
     Output('output-dependency', 'elements'),
-    State('input-field', 'value')
-)
-def update_output_dependency(n_clicks, value):
-    if n_clicks > 0:
-        return create_dependency_content(value)
-
-
-@app.callback(
-    Input('submit-button', 'n_clicks'),
+    Output('output-keywords', 'children'),
     Output('output-knowledge', 'children'),
     State('input-field', 'value')
 )
-def update_output_knowledge(n_clicks, value):
+def main_callback_submit(n_clicks, value):
     if n_clicks > 0:
-        return create_knowledge_content(value)
+        return create_outputs(value)
+
+
+@app.callback(
+    Input('input-dropdown', 'value'),
+    Output('output-entity', 'data'),
+    Output('output-dependency', 'elements'),
+    Output('output-keywords', 'children'),
+    Output('output-knowledge', 'children'),
+)
+def main_callback_select(value):
+    return create_outputs(value)
 
 
 @app.callback(
