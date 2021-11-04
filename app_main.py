@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import json
 import random
+import pandas as pd
+import spacy
 
 import dash_core_components as dcc
 import dash_cytoscape as cyto
 import dash_html_components as html
 from dash.dependencies import State
 from dash_extensions.enrich import Output, DashProxy, Input, MultiplexerTransform
+from dash import dash_table
 
 from tabs.question_graph_tab import create_question_content
 
@@ -48,6 +51,9 @@ app.layout = html.Div([
                 html.Button("Remove Selected Nodes", id='remove_button'),
                 dcc.Input(id='input_text', type='text', value='Here could be your question'),
                 html.Button('Submit', id='submit_button'),
+
+                html.H1(id='keywords_table'),
+
             ]),
             dcc.Tab(label='Selected Data', children=[
                 html.Div(style=styles['tab'], children=[
@@ -69,9 +75,35 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(Output('cytoscape', 'elements'),
-              [Input('submit_button', 'n_clicks')])
-def init_graph_with_data(_):
+@app.callback([
+    Output('cytoscape', 'elements'),
+    Output('keywords_table', 'children')], 
+    [Input('submit_button', 'n_clicks')],
+    [State('input_text', 'value')])
+def init_graph_with_data(_, value):
+
+    # keyword detection
+    col = [
+        {'name': 'Text', 'id': 'Text'},
+        {'name': 'Root.text', 'id': 'Root.text'},
+        {'name': 'Root.dependency', 'id': 'Root.dependency'},
+        {'name': 'Root.head.text', 'id': 'Root.head.text'},
+    ]
+
+    nlp = spacy.load("en_core_web_sm")
+    doc = nlp(value)
+
+    data = []
+
+    doc = nlp(value)
+    for chunk in doc.noun_chunks:
+        data.append({   'Text': chunk.text, 
+                        'Root.text': chunk.root.text, 
+                        'Root.dependency': chunk.root.dep_,
+                        'Root.head.text': chunk.root.head.text,
+                    })
+
+    # graph creation
     nodes = [
         {'data': {'id': str(i), 'label': 'Node {}'.format(i)}}
         for i in range(1, 21)
@@ -81,7 +113,10 @@ def init_graph_with_data(_):
         {'data': {'source': str(random.randint(1, 20)), 'target': str(random.randint(1, 20))}}
         for _ in range(30)
     ]
-    return nodes + edges
+
+    return nodes + edges, dash_table.DataTable(data=data, columns=col)
+
+    
 
 
 @app.callback(Output('cytoscape', 'elements'),
