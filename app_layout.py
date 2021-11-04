@@ -10,11 +10,17 @@ from tabs.dependency_tree_tab import dependency_tab, create_dependency_content
 from tabs.entity_names_tab import entity_tab, create_entity_content
 from tabs.keywords_tab import keywords_tab, create_keywords_content
 from tabs.knowledge_graph_tab import knowledge_graph_tab, create_knowledge_content
-from tabs.question_graph_tab import question_graph_tab, create_question_content
+from tabs.question_graph_tab import question_graph_tab, create_question_content, create_question_graph
+from rdflib import Graph
+import gensim.downloader as api
 
 app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform()])
 
 nlp = spacy.load("en_core_web_sm")
+gensim = api.load("glove-wiki-gigaword-50")
+#g = Graph()
+#g.parse("resources/usda.rdf")
+
 
 app.title = "Question understanding interface"
 app.layout = html.Div([
@@ -99,6 +105,7 @@ def create_outputs(question):
            create_dependency_content(doc), \
            create_keywords_content(question), \
            create_knowledge_content(question)
+    #create_question_graph("resources/question_1.nxhd", doc, gensim)
 
 
 @app.callback(
