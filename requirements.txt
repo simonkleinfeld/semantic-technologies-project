@@ -6,3 +6,4 @@ spacy
 rdflib
 gensim
 thefuzz[speedup]
+dash-bootstrap-components
