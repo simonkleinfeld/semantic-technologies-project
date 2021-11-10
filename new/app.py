@@ -64,7 +64,8 @@ def label_callback(data):
         return [], ''
     label = data[0]['label']
     labels = get_ranked_list(data[0]['label'])
-    labels.insert(0,{'label': label, 'value': label})
+    if label not in labels:
+        labels.insert(0, {'label': label, 'value': label})
     return labels, label
 
 
@@ -76,7 +77,6 @@ def label_callback(data):
 def displaySelectedNodeData(data):
     no_selection = data is None or len(data) == 0
     select_disabled = data is None or len(data) != 1
-    print("select_disabled",select_disabled)
     labels, label = label_callback(data)
     return labels, label, select_disabled, no_selection
 
@@ -112,6 +112,7 @@ def delete_nodes_edges(n_clicks, edges, nodes, elements):
     new_elements = [ele for ele in elements if ele['data']['id'] not in ids_to_remove]
     return new_elements
 
+
 @app.callback(
     Output('knowledge-graph', 'elements'),
     Input('select-label-dropdown', 'value'),
@@ -135,6 +136,83 @@ def delete_nodes_edges(value, edges, nodes, elements):
             element['data']['label'] = value
             break
     return elements
+
+
+def create_node_menu_items(elements):
+    menu_list = []
+    for element in elements:
+        data = element['data']
+        if 'target' not in data:
+            label = data['label']
+            id_ = data['id']
+            menu_list.append({'label': label, 'value': id_})
+    menu_list = sorted(menu_list, key=lambda d: d['label'])
+    return menu_list
+
+
+@app.callback(
+    Output("modal-add-dialog", "is_open"),
+    Output("from-node-dropdown", "options"),
+    Output("to-node-dropdown", "options"),
+    Input("add-button", "n_clicks"),
+    State('knowledge-graph', 'elements')
+)
+def toggle_modal(n_clicks, elements):
+    menu_list = create_node_menu_items(elements)
+
+    return n_clicks > 0, menu_list, menu_list
+
+
+@app.callback(
+    Output("new-node-id-input", "valid"),
+    Output('knowledge-graph', 'elements'),
+    Output("from-node-dropdown", "options"),
+    Output("to-node-dropdown", "options"),
+    Output("knowledge-graph", "selectedNodeData"),
+    Input("add-new-node-button", "n_clicks"),
+    State('knowledge-graph', 'elements'),
+    State('new-node-id-input', 'value'),
+    State('new-node-label-input', 'value'),
+    State("from-node-dropdown", "options"),
+    State("from-node-dropdown", "options")
+)
+def add_new_node(n_clicks, elements, new_id, new_label, from_options, to_options):
+    if n_clicks > 0:
+
+        current_ids = {ele_data['data']['id'] for ele_data in elements}
+
+        if new_id in current_ids:
+            return False, elements, from_options, to_options
+        new_node = {'id': new_id, 'label': new_label}
+        elements.append({'data': new_node})
+        from_options.append({'value': new_id, 'label': new_label})
+        to_options.append({'value': new_id, 'label': new_label})
+        from_options = sorted(from_options, key=lambda d: d['label'])
+        to_options = sorted(to_options, key=lambda d: d['label'])
+        return True, elements, from_options, to_options, [new_node]
+
+
+@app.callback(
+    Output("new-edge-id-input", "valid"),
+    Output('knowledge-graph', 'elements'),
+    Output("knowledge-graph", "selectedEdgeData"),
+    Input("add-new-edge-button", "n_clicks"),
+    State('knowledge-graph', 'elements'),
+    State("from-node-dropdown", "value"),
+    State("from-node-dropdown", "value"),
+    State("new-edge-label-input", "value"),
+    State("new-edge-id-input", "value")
+)
+def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_id):
+    if n_clicks > 0:
+        current_ids = {ele_data['data']['id'] for ele_data in elements}
+
+        if new_id in current_ids:
+            return False, elements, []
+
+        new_node = {'source': from_node_id, 'target': to_node_id, 'label': edge_label, 'id': new_id}
+        elements.append({'data': new_node})
+        return elements, [new_node]
 
 
 if __name__ == '__main__':
