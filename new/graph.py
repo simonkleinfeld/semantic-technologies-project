@@ -4,7 +4,8 @@ import numpy
 from numpy import dot
 from numpy.linalg import norm
 
-class Graph():
+
+class Graph:
 
     def __init__(self):
         self.node_neighbors = {}  # Pairing: Node to Neighbors
@@ -40,16 +41,16 @@ class Graph():
     def get_edge_vec(self, edge: Tuple[str, str]):
         return self.edge_attr.get(edge)['vec']
 
-    def get_node_vec(self, node:str):
+    def get_node_vec(self, node: str):
         return self.node_attr.get(node)['vec']
 
     def get_edge_label(self, edge: Tuple[str, str]):
         return self.edge_attr.get(edge)['label']
 
-    def get_node_label(self, node:str):
+    def get_node_label(self, node: str):
         return self.node_attr.get(node)['label']
 
-    def get_edges_for_node(self, node:str):
+    def get_edges_for_node(self, node: str):
         edge_list = []
         for e in self.edges():
             if node in e:
@@ -87,10 +88,11 @@ class Graph():
         if not node in self.node_neighbors:
             self.node_neighbors[node] = set()
             if label_tokens != []:
-                self.node_attr[node] = {"label":label, "vec": self.convert_token_list_to_vec(label_tokens, gensim, dim)}
+                self.node_attr[node] = {"label": label,
+                                        "vec": self.convert_token_list_to_vec(label_tokens, gensim, dim)}
                 return
             if vec != []:
-                self.node_attr[node] = {"label":label, "vec": vec}
+                self.node_attr[node] = {"label": label, "vec": vec}
                 return
 
     # edge consists of (node_id, node_id)
@@ -105,10 +107,11 @@ class Graph():
             if (u != v):
                 self.node_neighbors[v].add(u)
             if label_tokens != []:
-                self.edge_attr[(u,v)] = {"label":label, "vec": self.convert_token_list_to_vec(label_tokens, gensim, dim)}
+                self.edge_attr[(u, v)] = {"label": label,
+                                          "vec": self.convert_token_list_to_vec(label_tokens, gensim, dim)}
                 return
             if vec != []:
-                self.edge_attr[(u,v)] = {"label":label, "vec": vec}
+                self.edge_attr[(u, v)] = {"label": label, "vec": vec}
                 return
 
     def del_node(self, node: str):
