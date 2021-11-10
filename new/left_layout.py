@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
 import dash_cytoscape as cyto
-from dash import dcc
+from dash import dcc, html
 
 from new.graph_utils import GraphUtils
 
@@ -16,8 +16,10 @@ knowledge_graph_layout = dbc.Row([
                              placeholder='Select new label',
                              clearable=False,
                              searchable=True,
-                             style={'width': 300}
-                             )
+                             style={'width': 300},
+                             disabled=True
+                             ),
+                html.Button('Delete', id='delete-button', n_clicks=0, disabled=True),
             ]
             ),
             dbc.Col(
@@ -45,5 +47,4 @@ knowledge_graph_layout = dbc.Row([
 
 def get_ranked_list(selected_label):
     ranked = graph_utils.get_ranked_rdfs_labels(selected_label)
-    print(ranked)
     return ranked
