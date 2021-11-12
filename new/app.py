@@ -211,7 +211,7 @@ def add_new_node(n_clicks, elements, new_id, new_label, from_options, to_options
     Input("add-new-edge-button", "n_clicks"),
     State('knowledge-graph', 'elements'),
     State("from-node-dropdown", "value"),
-    State("from-node-dropdown", "value"),
+    State("to-node-dropdown", "value"),
     State("new-edge-label-input", "value"),
     State("new-edge-id-input", "value")
 )
