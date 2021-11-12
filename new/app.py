@@ -61,43 +61,48 @@ app.layout = html.Div([
 ])
 
 
-def get_ranked_list(selected_label):
-    ranked = graph_utils.get_ranked_rdfs_labels(selected_label)
-    return ranked
-
-
-def label_callback(data):
+def get_ranked_labels(question_id, data):
     if data is None or len(data) != 1:
         return [], ''
     label = data[0]['label']
-    labels = get_ranked_list(data[0]['label'])
+    labels = graph_utils.get_ranked_rdfs_labels(question_id, data[0]['label'])
     if label not in labels:
         labels.insert(0, {'label': label, 'value': label})
     return labels, label
 
 
-@app.callback(Output('select-label-dropdown', 'options'),
-              Output('select-label-dropdown', 'value'),
-              Output('select-label-dropdown', 'disabled'),
-              Output('delete-button', 'disabled'),
-              [Input('knowledge-graph', 'selectedNodeData')])
-def displaySelectedNodeData(data):
-    no_selection = data is None or len(data) == 0
-    select_disabled = data is None or len(data) != 1
-    labels, label = label_callback(data)
-    return labels, label, select_disabled, no_selection
+def label_callback(data, value):
+    regex = "<(.*)><(.*)><(.*)>"
+    res = re.match(regex, value)
+    if res is not None:
+        gr = res.groups()
+        qid = gr[0]
+
+        no_selection = data is None or len(data) == 0
+        select_disabled = data is None or len(data) != 1
+        labels, label = get_ranked_labels(qid, data)
+        return labels, label, select_disabled, no_selection
 
 
 @app.callback(Output('select-label-dropdown', 'options'),
               Output('select-label-dropdown', 'value'),
               Output('select-label-dropdown', 'disabled'),
               Output('delete-button', 'disabled'),
-              [Input('knowledge-graph', 'selectedEdgeData')])
-def displaySelectedEdgeData(data):
-    no_selection = data is None or len(data) == 0
-    select_disabled = data is None or len(data) != 1
-    labels, label = label_callback(data)
-    return labels, label, select_disabled, no_selection
+              Input('knowledge-graph', 'selectedNodeData'),
+              Input('input-dropdown', 'value'))
+def displaySelectedNodeData(data, value):
+    return label_callback(data, value)
+
+
+@app.callback(Output('select-label-dropdown', 'options'),
+              Output('select-label-dropdown', 'value'),
+              Output('select-label-dropdown', 'disabled'),
+              Output('delete-button', 'disabled'),
+              Input('knowledge-graph', 'selectedEdgeData'),
+              Input('input-dropdown', 'value')
+              )
+def displaySelectedEdgeData(data, value):
+    return label_callback(data, value)
 
 
 @app.callback(
@@ -233,7 +238,6 @@ def load_question_files(value):
         gr = res.groups()
         file = gr[2]
         graph_utils.load_file("../resources/" + file)
-        graph_utils.get_rdfs_labels()
         return graph_utils.get_dash_graph()
 
 

@@ -1,9 +1,10 @@
+import json
 import re
 from pathlib import PurePosixPath
 from urllib.parse import unquote, urlparse
 
 from Levenshtein import distance
-from SPARQLWrapper import SPARQLWrapper, JSON
+from SPARQLWrapper import SPARQLWrapper
 
 from new.graph import Graph
 
@@ -12,8 +13,6 @@ class GraphUtils:
     def __init__(self):
         self.graph = Graph()
         self.DIM_GENSIM = 50
-        self.uris = set()
-        self.labels = set()
         self.sparql = SPARQLWrapper("http://dbpedia.org/sparql")
 
     def convert_uri_to_string_label(self, uri):
@@ -29,7 +28,7 @@ class GraphUtils:
     def load_file(self, file):
         file1 = open(file, 'r')
         lines = file1.readlines()
-        regex = "(<.*>)\s(<.*>)\s(<.*>)"
+        regex = "<(.*)>\s<(.*)>\s<(.*)>"
         self.labels = set()
         self.graph = Graph()
         existing_nodes = set()
@@ -53,39 +52,18 @@ class GraphUtils:
                 p = self.convert_uri_to_string_label(pred)
                 pl = p.split(" ")
                 self.graph.add_edge((subject, obj), None, self.DIM_GENSIM, p, pl, vec=[0] * 50)
-                if subject.startswith("<http://dbpedia.org/"):
-                    self.uris.add(subject)
-                if pred.startswith("<http://dbpedia.org/"):
-                    self.uris.add(pred)
-                if obj.startswith("<http://dbpedia.org/"):
-                    self.uris.add(obj)
 
     def get_dash_graph(self):
         return self.graph.get_dash_graph()
 
-    def get_rdfs_labels(self):
-        sparql_uris = ', '.join(str(e) for e in self.uris)
+    def get_rdfs_labels(self, question_id):
+        with open('../resources/question_labels_' + str(question_id) + '.json', encoding="utf8") as json_file:
+            data = json.load(json_file)
+            return data['labels']
 
-        query = """
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            SELECT ?uri ?label {
-            ?uri rdfs:label ?label
-            FILTER (?uri IN (URIS_REPLACE))
-            FILTER (lang(?label) = 'en')
-            } 
-        """.replace('URIS_REPLACE', sparql_uris)
-
-        self.sparql.setQuery(query)
-        self.sparql.setReturnFormat(JSON)
-        results = self.sparql.query().convert()
-        for res in results['results']['bindings']:
-            label = res['label']['value']
-            self.labels.add(label)
-        return self.labels
-
-    def get_ranked_rdfs_labels(self, label):
+    def get_ranked_rdfs_labels(self, question_id, label):
         ranked = {}
-        for rdfs_label in self.labels:
+        for rdfs_label in self.get_rdfs_labels(question_id):
             calc_distance = distance(label, rdfs_label)
             ranked[rdfs_label] = calc_distance
         sorted_labels = sorted(ranked.items(), key=lambda x: x[1], reverse=False)
