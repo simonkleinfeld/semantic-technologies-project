@@ -1,0 +1,36 @@
+<http://en.wikipedia.org/wiki/Boston_Tea_Party>	<http://xmlns.com/foaf/0.1/primaryTopic>	<http://dbpedia.org/resource/Boston_Tea_Party>
+<http://dbpedia.org/resource/Boston_Tea_Party_(disambiguation)>	<http://dbpedia.org/ontology/wikiPageDisambiguates>	<http://dbpedia.org/resource/Boston_Tea_Party>
+<http://dbpedia.org/resource/Thomas_Young_(American_revolutionary)>	<http://dbpedia.org/ontology/knownFor>	<http://dbpedia.org/resource/Boston_Tea_Party>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://www.w3.org/2004/02/skos/core#exactMatch>	<http://globalwordnet.org/ili/i41576>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://www.w3.org/2003/01/geo/wgs84_pos#lat>	<42.3536>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://www.w3.org/2003/01/geo/wgs84_pos#long>	<-71.0524>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://xmlns.com/foaf/0.1/depiction>	<http://commons.wikimedia.org/wiki/Special:FilePath/Boston_Tea_Party_w.jpg>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://xmlns.com/foaf/0.1/isPrimaryTopicOf>	<http://en.wikipedia.org/wiki/Boston_Tea_Party>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://www.w3.org/2003/01/geo/wgs84_pos#geometry>	<POINT(-71.052398681641 42.35359954834)>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/ontology/thumbnail>	<http://commons.wikimedia.org/wiki/Special:FilePath/Boston_Tea_Party_w.jpg?width=300>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/align>	<right>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/caption>	<Source: W.D. Cooper. Boston Tea Party in The History of North America. London: E. Newberry, 1789. Engraving. Plate opposite p. 58. Rare Book and Special Collections Division, Library of Congress>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/date>	<1773-12-16>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/goals>	<To protest British Parliament's tax on tea.  "No taxation without representation.">
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/leadfigures>	<http://dbpedia.org/resource/William_Molineux>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/leadfigures>	<http://dbpedia.org/resource/Samuel_Adams>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/leadfigures>	<http://dbpedia.org/resource/Thomas_Hutchinson_(governor)>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/leadfigures>	<http://dbpedia.org/resource/Paul_Revere>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/leadfigures>	<( and other «Sons of Liberty»...)>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/methods>	<Throw the tea into Boston Harbor>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/partof>	<the American Revolution>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/place>	<http://dbpedia.org/resource/Boston>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/place>	<http://dbpedia.org/resource/Province_of_Massachusetts_Bay>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/result>	<http://dbpedia.org/resource/Intolerable_Acts>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/side>	<Great Britain
+*East India Company
+*Parliament>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/side>	<Thirteen Colonies
+*Boston Sons of Liberty>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/title>	<Boston Tea Party>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/video>	<--11-21>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/width>	<220>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/property/causes>	<http://dbpedia.org/resource/Tea_Act>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://www.w3.org/ns/prov#wasDerivedFrom>	<http://en.wikipedia.org/wiki/Boston_Tea_Party?oldid=1025813815&ns=0>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://dbpedia.org/ontology/wikiPageLength>	<45458>
+<http://dbpedia.org/resource/Boston_Tea_Party>	<http://purl.org/linguistics/gold/hypernym>	<http://dbpedia.org/resource/Protest>

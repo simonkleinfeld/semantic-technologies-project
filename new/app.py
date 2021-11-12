@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import ssl
 
 import dash_bootstrap_components as dbc
@@ -6,7 +7,8 @@ import spacy
 from dash import html, Input, Output, State
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
-from new.left_layout import knowledge_graph_layout, get_ranked_list
+from new.graph_utils import GraphUtils
+from new.left_layout import knowledge_graph_layout
 from new.right_layout import question_graph_layout
 from select_question import question_select
 
@@ -16,7 +18,7 @@ app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform
                 external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 nlp = spacy.load("en_core_web_sm")
-
+graph_utils = GraphUtils()
 app.title = "Question understanding interface"
 app.layout = html.Div([
     dbc.Row([
@@ -57,6 +59,11 @@ app.layout = html.Div([
         ))
 
 ])
+
+
+def get_ranked_list(selected_label):
+    ranked = graph_utils.get_ranked_rdfs_labels(selected_label)
+    return ranked
 
 
 def label_callback(data):
@@ -212,7 +219,22 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
 
         new_node = {'source': from_node_id, 'target': to_node_id, 'label': edge_label, 'id': new_id}
         elements.append({'data': new_node})
-        return elements, [new_node]
+        return True, elements, [new_node]
+
+
+@app.callback(
+    Input('input-dropdown', 'value'),
+    Output('knowledge-graph', 'elements'),
+)
+def load_question_files(value):
+    regex = "<(.*)><(.*)><(.*)>"
+    res = re.match(regex, value)
+    if res is not None:
+        gr = res.groups()
+        file = gr[2]
+        graph_utils.load_file("../resources/" + file)
+        graph_utils.get_rdfs_labels()
+        return graph_utils.get_dash_graph()
 
 
 if __name__ == '__main__':

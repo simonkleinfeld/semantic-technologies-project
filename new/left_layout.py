@@ -2,12 +2,6 @@ import dash_bootstrap_components as dbc
 import dash_cytoscape as cyto
 from dash import dcc, html
 
-from new.graph_utils import GraphUtils
-
-graph_utils = GraphUtils()
-graph_utils.load_file("../resources/question_1.nxhd")
-graph_utils.get_rdfs_labels()
-
 knowledge_graph_layout = dbc.Row([
     dbc.Col(
         [
@@ -26,7 +20,6 @@ knowledge_graph_layout = dbc.Row([
             dbc.Col(
                 cyto.Cytoscape(
                     id='knowledge-graph',
-                    elements=graph_utils.get_dash_graph(),
                     layout={
                         'name': 'concentric'
                     },
@@ -99,8 +92,3 @@ knowledge_graph_layout = dbc.Row([
 
         width=12)
 ])
-
-
-def get_ranked_list(selected_label):
-    ranked = graph_utils.get_ranked_rdfs_labels(selected_label)
-    return ranked

@@ -1,6 +1,5 @@
 import json
 
-import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 
@@ -9,14 +8,17 @@ def load_questions():
         data = json.load(json_file)
         questions = []
         for question in data["questions"]:
-            questions.append({'label': question, 'value': question})
+            label = question['question']
+            qid = question['id']
+            file = question['file']
+            value = "<" + str(qid) + ">" + "<" + label + ">" + "<" + file + ">"
+            questions.append({'label': label, 'value': value})
     return questions
 
 
 question_select = html.Div(id='output-select-div',
                            style={'width': '100%', 'display': 'flex', 'alignItems': 'center',
                                   'justifyContent': 'center', 'margin': '8px'}, children=[
-
         dcc.Dropdown(id='input-dropdown',
                      placeholder='Select question',
                      style={'width': 470},
@@ -25,4 +27,3 @@ question_select = html.Div(id='output-select-div',
                      searchable=True,
                      options=load_questions())
     ])
-
