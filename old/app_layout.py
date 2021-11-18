@@ -5,19 +5,19 @@ import spacy
 from dash import dcc, html, Output, Input, State
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
-from select_question import question_select
-from tabs.dependency_tree_tab import dependency_tab, create_dependency_content
-from tabs.entity_names_tab import entity_tab, create_entity_content
-from tabs.keywords_tab import keywords_tab, create_keywords_content
-from tabs.knowledge_graph_tab import knowledge_graph_tab, create_knowledge_content
-from tabs.question_graph_tab import question_graph_tab, create_question_content, create_question_graph
+from old.select_question import question_select
+from old.tabs.dependency_tree_tab import dependency_tab, create_dependency_content
+from old.tabs.entity_names_tab import entity_tab, create_entity_content
+from old.tabs.keywords_tab import keywords_tab, create_keywords_content
+from old.tabs.knowledge_graph_tab import knowledge_graph_tab, create_knowledge_content
+from old.tabs.question_graph_tab import question_graph_tab, create_question_content, create_question_graph_s
 from rdflib import Graph
 import gensim.downloader as api
 
 app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform()])
 
 nlp = spacy.load("en_core_web_sm")
-gensim = api.load("glove-wiki-gigaword-50")
+#gensim = api.load("glove-wiki-gigaword-50")
 #g = Graph()
 #g.parse("resources/usda.rdf")
 
@@ -104,7 +104,7 @@ def create_outputs(question):
     return create_entity_content(doc), \
            create_dependency_content(doc), \
            create_keywords_content(question), \
-           create_knowledge_content(question)
+           create_knowledge_content(question), create_question_graph_s(doc)
     #create_question_graph("resources/question_1.nxhd", doc, gensim)
 
 
@@ -127,6 +127,7 @@ def main_callback_submit(n_clicks, value):
     Output('output-dependency', 'elements'),
     Output('output-keywords', 'children'),
     Output('output-knowledge', 'children'),
+    Output('output-question', 'elements')
 )
 def main_callback_select(value):
     return create_outputs(value)

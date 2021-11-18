@@ -10,7 +10,7 @@ from dash_extensions.enrich import DashProxy, MultiplexerTransform
 from new.graph_utils import GraphUtils
 from new.left_layout import knowledge_graph_layout
 from new.right_layout import question_graph_layout
-from select_question import question_select
+from new.select_question import question_select
 
 ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
 

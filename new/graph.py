@@ -12,32 +12,6 @@ class Graph:
         self.edge_attr = {}
         self.node_attr = {}
 
-    def breadth_first_search(self, label, gensim, root=None):
-        visited = {}
-        queue = []
-        s = list(self.node_neighbors.keys()).pop(0)
-        queue.append(s)
-        visited[s] = True
-        while queue:
-            s = queue.pop(0)
-            str_lab = self.get_node_label(s)
-            lab = self.get_node_vec(s)
-            label_vec = []
-            try:
-                label_vec = gensim.wv[label]
-            except Exception as e:
-                pass
-            if label_vec != []:
-                if dot(lab, label_vec) / (norm(lab) * norm(label_vec)) > 0.95:
-                    return s
-            if str_lab == label:
-                return s
-            for e in self.get_edges_for_node(s):
-                if visited[e[1]] == False:
-                    queue.append(e[1])
-                    visited[e[1]] = True
-        return None
-
     def get_edge_vec(self, edge: Tuple[str, str]):
         return self.edge_attr.get(edge)['vec']
 
@@ -69,50 +43,24 @@ class Graph:
     def has_node(self, node):
         return node in self.node_neighbors
 
-    def convert_token_list_to_vec(self, label_tokens, gensim, dim):
-        sent_vec = numpy.zeros(dim)
-        for tok in label_tokens:
-            try:
-                sent_vec = sent_vec + gensim.wv[tok]
-            except Exception as e:
-                continue
-        if len(label_tokens) > 0:
-            return sent_vec * (1.0 / len(label_tokens))
-        return sent_vec
-
-    def add_node(self, node: str, gensim, dim, label='', label_tokens=None, vec=None):
+    def add_node(self, node: str, label='', vec=None):
         if vec is None:
             vec = []
-        if label_tokens is None:
-            label_tokens = []
         if not node in self.node_neighbors:
             self.node_neighbors[node] = set()
-            if label_tokens != []:
-                self.node_attr[node] = {"label": label,
-                                        "vec": self.convert_token_list_to_vec(label_tokens, gensim, dim)}
-                return
-            if vec != []:
-                self.node_attr[node] = {"label": label, "vec": vec}
-                return
+            self.node_attr[node] = {"label": label, "vec": vec}
+
 
     # edge consists of (node_id, node_id)
-    def add_edge(self, edge: Tuple[str, str], gensim, dim, label='', label_tokens=None, vec=None):
+    def add_edge(self, edge: Tuple[str, str], label='', vec=None):
         if vec is None:
             vec = []
-        if label_tokens is None:
-            label_tokens = []
         u, v = edge
         if (v not in self.node_neighbors[u] and u not in self.node_neighbors[v]):
             self.node_neighbors[u].add(v)
             if (u != v):
                 self.node_neighbors[v].add(u)
-            if label_tokens != []:
-                self.edge_attr[(u, v)] = {"label": label,
-                                          "vec": self.convert_token_list_to_vec(label_tokens, gensim, dim)}
-                return
-            if vec != []:
-                self.edge_attr[(u, v)] = {"label": label, "vec": vec}
-                return
+            self.edge_attr[(u, v)] = {"label": label, "vec": vec}
 
     def del_node(self, node: str):
         for each in list(self.neighbors(node)):

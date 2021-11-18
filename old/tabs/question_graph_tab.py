@@ -9,6 +9,7 @@ from old.tabs.graph import Graph
 from numpy import dot
 from numpy.linalg import norm
 from thefuzz import fuzz
+from new.svo_triple_approach import form_question_graph_with_noun_chunks
 
 
 DIM_GENSIM = 50
@@ -39,6 +40,9 @@ question_graph_tab = dcc.Tab(label='Question Graph', children=[
         ])
     ])
 ])
+
+def create_question_graph_s(doc):
+    form_question_graph_with_noun_chunks(doc)
 
 def branch_nodes_with_limit(graph: Graph, active_nodes, no_tokens):
     branched_set = set(active_nodes)
