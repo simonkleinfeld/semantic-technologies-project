@@ -134,4 +134,3 @@ print(generate_question_graph("In what city is the Heineken brewery?"))
 print(generate_question_graph("What is the atmosphere of the Moon composed of?"))
 print(generate_question_graph("Which electronics companies were founded in Beijing?"))
 print(generate_question_graph("Which electronics companies were not founded in Beijing?"))
-

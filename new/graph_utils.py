@@ -42,16 +42,16 @@ class GraphUtils:
                 if subject not in existing_nodes:
                     s = self.convert_uri_to_string_label(subject)
                     sl = s.split(" ")
-                    self.graph.add_node(subject, None, self.DIM_GENSIM, s, sl, vec=[0] * 50)
+                    self.graph.add_node(subject, s)
                     existing_nodes.add(subject)
                 if obj not in existing_nodes:
                     s = self.convert_uri_to_string_label(obj)
                     sl = s.split(" ")
-                    self.graph.add_node(obj, None, self.DIM_GENSIM, s, sl, vec=[0] * 50)
+                    self.graph.add_node(obj, s)
                     existing_nodes.add(obj)
                 p = self.convert_uri_to_string_label(pred)
                 pl = p.split(" ")
-                self.graph.add_edge((subject, obj), None, self.DIM_GENSIM, p, pl, vec=[0] * 50)
+                self.graph.add_edge((subject, obj), p)
 
     def get_dash_graph(self):
         return self.graph.get_dash_graph()
