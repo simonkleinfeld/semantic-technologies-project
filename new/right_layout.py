@@ -11,12 +11,12 @@ question_graph_layout = dbc.Row([
                 },
                 style={
                     "width": "100%",
-                    "height": "900px"
+                    "height": "600px"
                 },
                 stylesheet=[
                     {'selector': 'edge', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
                     {'selector': 'node', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
                 ]
             )
-        ], width=600)
+        ], width=12)
 ])

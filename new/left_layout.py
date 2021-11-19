@@ -21,7 +21,7 @@ knowledge_graph_layout = dbc.Row([
                 cyto.Cytoscape(
                     id='knowledge-graph',
                     layout={
-                        'name': 'concentric'
+                        'name': 'random'
                     },
                     style={
                         "width": "100%",
