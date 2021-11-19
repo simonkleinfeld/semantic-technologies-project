@@ -2,8 +2,6 @@ from enum import Enum
 from new.graph_utils import Graph
 import spacy
 
-nlp = spacy.load("en_core_web_sm")
-
 #https://universaldependencies.org/u/pos/
 #https://universaldependencies.org/docs/en/dep/
 
@@ -35,8 +33,7 @@ def generate_uni_gram_graph_from_chunks(chunk_list, chunk_root_list, root_text):
     return g.get_dash_graph()
 
 
-def generate_question_graph(question):
-    processed_tokens = nlp(question)
+def generate_question_graph(processed_tokens):
     return form_question_graph_with_noun_chunks(processed_tokens)
 
 
@@ -109,7 +106,7 @@ def get_qsvo_triple_from_root(question):
     OBJECT_DEP = ["dobj", "iobj"]
     OBJECT_POS = ['NOUN', 'PROPN']
     ROOT = "ROOT"
-    processed_tokens = nlp(question)
+    processed_tokens = []
     qsvo = {'q' : '', 's': '', 'v': '', 'o': ''}
     root_tok = [tok for tok in processed_tokens if tok.pos_ == ROOT][0]
     if root_tok.pos_ == 'VERB':
@@ -125,12 +122,3 @@ def get_qsvo_triple_from_root(question):
             possible_subjects.append(n)
         if n.dep_ in OBJECT_DEP:
             possible_objects.append(n)
-
-print(generate_question_graph("Which countries have more than ten volcanoes?"))
-print(generate_question_graph("What are the five boroughs of New York?"))
-print(generate_question_graph("How short is the shortest active NBA player?"))
-print(generate_question_graph("What is Elon Musk famous for?"))
-print(generate_question_graph("In what city is the Heineken brewery?"))
-print(generate_question_graph("What is the atmosphere of the Moon composed of?"))
-print(generate_question_graph("Which electronics companies were founded in Beijing?"))
-print(generate_question_graph("Which electronics companies were not founded in Beijing?"))

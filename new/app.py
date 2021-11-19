@@ -11,6 +11,7 @@ from new.graph_utils import GraphUtils
 from new.left_layout import knowledge_graph_layout
 from new.right_layout import question_graph_layout
 from new.select_question import question_select
+from new.svo_triple_approach import generate_question_graph
 
 ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
 
@@ -230,6 +231,7 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
 @app.callback(
     Input('input-dropdown', 'value'),
     Output('knowledge-graph', 'elements'),
+    Output('question-graph', 'elements'),
 )
 def load_question_files(value):
     regex = "<(.*)><(.*)><(.*)>"
@@ -238,7 +240,7 @@ def load_question_files(value):
         gr = res.groups()
         file = gr[2]
         graph_utils.load_file("../resources/" + file)
-        return graph_utils.get_dash_graph()
+        return graph_utils.get_dash_graph(), generate_question_graph(nlp(gr[1]))
 
 
 if __name__ == '__main__':
