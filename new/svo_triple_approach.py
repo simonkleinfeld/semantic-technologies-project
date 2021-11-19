@@ -16,19 +16,23 @@ def generate_uni_gram_graph_from_chunks(chunk_list, chunk_root_list, root_text):
     for i, chunk_root in enumerate(chunk_root_list):
         t = chunk_list[i].replace(chunk_root, "")
         chunk_list[i] = t
+    chunk_list = [x for x in chunk_list if x]
     print(chunk_root_list)
+    print(chunk_list)
     if len(chunk_root_list) != 2:
         g.add_node(root_text, root_text)
         for chunk_root in chunk_root_list:
-            g.add_node(chunk_root, root_text)
+            g.add_node(chunk_root, chunk_root)
             g.add_edge((chunk_root, root_text))
     else:
-        g.add_node(chunk_list[0], chunk_list[0])
-        g.add_node(chunk_list[1], chunk_list[1])
         g.add_node(chunk_root_list[0], chunk_root_list[0])
         g.add_node(chunk_root_list[1], chunk_root_list[1])
-        g.add_edge((chunk_list[0], chunk_root_list[0]), "")
-        g.add_edge((chunk_list[1], chunk_root_list[1]), "")
+        if len(chunk_list) == 1:
+            g.add_node(chunk_list[0], chunk_list[0])
+            g.add_edge((chunk_list[0], chunk_root_list[0]), "")
+        if len(chunk_list) == 2:
+            g.add_node(chunk_list[1], chunk_list[1])
+            g.add_edge((chunk_root_list[0], chunk_root_list[1]), root_text)
         g.add_edge((chunk_root_list[0], chunk_root_list[1]), root_text)
     return g.get_dash_graph()
 
