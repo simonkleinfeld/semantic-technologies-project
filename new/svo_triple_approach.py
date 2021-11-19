@@ -40,6 +40,14 @@ def generate_question_graph(question):
     return form_question_graph_with_noun_chunks(processed_tokens)
 
 
+def isNegated(tok):
+    negations = ["no", "not", "n't", "never", "none"]
+    for dep in list(tok.lefts) + list(tok.rights):
+        if dep.lower_ in negations:
+            return True, dep.lower_
+    return False, dep.lower_
+
+
 def form_question_graph_with_noun_chunks(processed_tokens, chunk_processing_algorithm=CHUNK_PROCESSING_ALGORITHM.UNI_GRAM_USING_ROOTS):
     ROOT = "ROOT"
     chunk_list_roots = []
@@ -51,9 +59,45 @@ def form_question_graph_with_noun_chunks(processed_tokens, chunk_processing_algo
         chunk_list_roots.append(chunk.root.text)
         root_text = chunk.root.head.lemma_
         root_type = chunk.root.head
+        neg, t = isNegated(root_type)
+        if neg:
+            root_text = t + " " + chunk.root.head.lemma_
     if root_type.pos_ != 'VERB':
         print(root_type.pos_)
-        print("Non verb root, results may be wrong")
+        print("Non verb root, looking for potential verb dep")
+        alt_root_text = None
+        alt_root_type = None
+        print("Looking at root children")
+        for c in root_type.children:
+            if c.pos_ == 'VERB':
+                alt_root_type = c
+                alt_root_text = c.lemma_
+        if alt_root_type != None:
+            print("Found Verb From Root !")
+            root_text = alt_root_text.lemma_
+            root_type = alt_root_type
+            neg, t = isNegated(root_type)
+            if neg:
+                root_text = t + " " + alt_root_text.lemma_
+        else:
+            print("Looking across question for main verb")
+            verbs = [tok for tok in processed_tokens if tok.pos_ == "VERB"]
+            if len(verbs) == 0:
+                print("No verbs found !")
+            else:
+                m = -1
+                max_v = None
+                for v in verbs:
+                    l = list(v.children)
+                    if len(l) > m:
+                        m = len(l)
+                        max_v = v
+                neg, t = isNegated(max_v)
+                root_type = max_v
+                if neg:
+                    root_text = t + " "+max_v.text
+                else:
+                    root_text = max_v.text
     if chunk_processing_algorithm == CHUNK_PROCESSING_ALGORITHM.UNI_GRAM_USING_ROOTS:
         return generate_uni_gram_graph_from_chunks(chunk_list, chunk_list_roots, root_text)
 
@@ -88,6 +132,6 @@ print(generate_question_graph("How short is the shortest active NBA player?"))
 print(generate_question_graph("What is Elon Musk famous for?"))
 print(generate_question_graph("In what city is the Heineken brewery?"))
 print(generate_question_graph("What is the atmosphere of the Moon composed of?"))
-
 print(generate_question_graph("Which electronics companies were founded in Beijing?"))
+print(generate_question_graph("Which electronics companies were not founded in Beijing?"))
 
