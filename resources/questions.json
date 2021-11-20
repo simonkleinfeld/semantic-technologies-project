@@ -59,6 +59,11 @@
       "id": 23,
       "question": "Who created Family Guy?",
       "file": "question_23.nxhd"
+    },
+    {
+      "id": 24,
+      "question": "How many people live in Poland?",
+      "file": "question_24.nxhd"
     }
   ]
 }

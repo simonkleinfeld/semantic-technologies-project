@@ -4,7 +4,7 @@ import ssl
 
 import dash_bootstrap_components as dbc
 import spacy
-from dash import html, Input, Output, State
+from dash import Input, Output, State, html
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
 from new.graph_utils import GraphUtils
@@ -89,7 +89,7 @@ def label_callback(data, value):
               Output('select-label-dropdown', 'value'),
               Output('select-label-dropdown', 'disabled'),
               Output('delete-button', 'disabled'),
-              Input('knowledge-graph', 'selectedNodeData'),
+              Input('question-graph', 'selectedNodeData'),
               Input('input-dropdown', 'value'))
 def displaySelectedNodeData(data, value):
     return label_callback(data, value)
@@ -99,7 +99,7 @@ def displaySelectedNodeData(data, value):
               Output('select-label-dropdown', 'value'),
               Output('select-label-dropdown', 'disabled'),
               Output('delete-button', 'disabled'),
-              Input('knowledge-graph', 'selectedEdgeData'),
+              Input('question-graph', 'selectedEdgeData'),
               Input('input-dropdown', 'value')
               )
 def displaySelectedEdgeData(data, value):
@@ -107,11 +107,11 @@ def displaySelectedEdgeData(data, value):
 
 
 @app.callback(
-    Output('knowledge-graph', 'elements'),
+    Output('question-graph', 'elements'),
     Input('delete-button', 'n_clicks'),
-    State('knowledge-graph', 'selectedEdgeData'),
-    State('knowledge-graph', 'selectedNodeData'),
-    State('knowledge-graph', 'elements'),
+    State('question-graph', 'selectedEdgeData'),
+    State('question-graph', 'selectedNodeData'),
+    State('question-graph', 'elements'),
 )
 def delete_nodes_edges(n_clicks, edges, nodes, elements):
     if n_clicks <= 0:
@@ -127,11 +127,11 @@ def delete_nodes_edges(n_clicks, edges, nodes, elements):
 
 
 @app.callback(
-    Output('knowledge-graph', 'elements'),
+    Output('question-graph', 'elements'),
     Input('select-label-dropdown', 'value'),
-    State('knowledge-graph', 'selectedEdgeData'),
-    State('knowledge-graph', 'selectedNodeData'),
-    State('knowledge-graph', 'elements'),
+    State('question-graph', 'selectedEdgeData'),
+    State('question-graph', 'selectedNodeData'),
+    State('question-graph', 'elements'),
 )
 def delete_nodes_edges(value, edges, nodes, elements):
     if value is None:
@@ -168,7 +168,7 @@ def create_node_menu_items(elements):
     Output("from-node-dropdown", "options"),
     Output("to-node-dropdown", "options"),
     Input("add-button", "n_clicks"),
-    State('knowledge-graph', 'elements')
+    State('question-graph', 'elements')
 )
 def toggle_modal(n_clicks, elements):
     menu_list = create_node_menu_items(elements)
@@ -178,12 +178,12 @@ def toggle_modal(n_clicks, elements):
 
 @app.callback(
     Output("new-node-id-input", "valid"),
-    Output('knowledge-graph', 'elements'),
+    Output('question-graph', 'elements'),
     Output("from-node-dropdown", "options"),
     Output("to-node-dropdown", "options"),
-    Output("knowledge-graph", "selectedNodeData"),
+    Output("question-graph", "selectedNodeData"),
     Input("add-new-node-button", "n_clicks"),
-    State('knowledge-graph', 'elements'),
+    State('question-graph', 'elements'),
     State('new-node-id-input', 'value'),
     State('new-node-label-input', 'value'),
     State("from-node-dropdown", "options"),
@@ -207,10 +207,10 @@ def add_new_node(n_clicks, elements, new_id, new_label, from_options, to_options
 
 @app.callback(
     Output("new-edge-id-input", "valid"),
-    Output('knowledge-graph', 'elements'),
-    Output("knowledge-graph", "selectedEdgeData"),
+    Output('question-graph', 'elements'),
+    Output("question-graph", "selectedEdgeData"),
     Input("add-new-edge-button", "n_clicks"),
-    State('knowledge-graph', 'elements'),
+    State('question-graph', 'elements'),
     State("from-node-dropdown", "value"),
     State("to-node-dropdown", "value"),
     State("new-edge-label-input", "value"),
