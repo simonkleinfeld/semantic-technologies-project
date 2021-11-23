@@ -8,8 +8,8 @@ from dash import Input, Output, State, html
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
 from new.graph_utils import GraphUtils
-from new.left_layout import knowledge_graph_layout
-from new.right_layout import question_graph_layout
+from new.knowledge_graph_layout import knowledge_graph_layout
+from new.question_graph_layout import question_graph_layout
 from new.select_question import question_select
 from new.svo_triple_approach import generate_question_graph
 
@@ -22,44 +22,47 @@ nlp = spacy.load("en_core_web_sm")
 graph_utils = GraphUtils()
 app.title = "Question understanding interface"
 app.layout = html.Div([
-    dbc.Row([
+    dbc.Row(
         dbc.Col(html.H1(
             children='Question understanding interface',
             style={
                 'textAlign': 'center',
             }
-        )),
-        dbc.Col(
-            html.Header(
-                "Please select a question in the select below. "
-                "Then the subset of the knowledge graph and a generated question graph are displayed below",
-                style={
-                    'textAlign': 'center',
-                }
-            ),
-            width=12),
-        dbc.Col(question_select, width=12),
-    ]),
+        ), width=6), justify="center", align="center", style={"margin": "8px", "paddingTop": "18%"}),
     dbc.Row(
-        dbc.Accordion(
-            [
-                dbc.AccordionItem(
-                    [
-                        knowledge_graph_layout
-                    ],
-                    title="Subset Knowledge Graph Visualization",
-                ),
-                dbc.AccordionItem(
-                    [
-                        question_graph_layout
-                    ],
-                    title="Question Graph Visualization",
-                )
-            ]
-
-        ))
-
-])
+        dbc.Col(html.Header(
+            "Select a question below and have a look on the knowledge graph or the generated question graph",
+            style={
+                'textAlign': 'center',
+            }
+        )), justify="center", align="center", style={"margin": "8px"}),
+    dbc.Row(
+        dbc.Col(question_select, width=4), justify="center", align="center", style={"margin": "8px"}),
+    dbc.Row([
+        dbc.Col(
+            dbc.Button("Open knowledge graph", id="open-kg", n_clicks=0, disabled=True),
+            width=2),
+        dbc.Col(
+            dbc.Button("Open question graph", id="open-qg", n_clicks=0, disabled=True)
+            , width=2)
+    ], justify="center", align="around", style={"margin": "8px"}),
+    dbc.Modal(
+        [
+            dbc.ModalHeader(dbc.ModalTitle("Subset Knowledge Graph")),
+            dbc.ModalBody(knowledge_graph_layout)
+        ],
+        id="modal-kg",
+        fullscreen=True,
+    ),
+    dbc.Modal(
+        [
+            dbc.ModalHeader(dbc.ModalTitle("Question Graph")),
+            dbc.ModalBody(question_graph_layout)
+        ],
+        id="modal-qg",
+        fullscreen=True,
+    )
+], style={"height": "100vh", "overflowY": "hidden", "overflowX": "hidden"})
 
 
 def get_ranked_labels(question_id, data):
@@ -232,6 +235,8 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
     Input('input-dropdown', 'value'),
     Output('knowledge-graph', 'elements'),
     Output('question-graph', 'elements'),
+    Output('open-kg', 'disabled'),
+    Output('open-qg', 'disabled'),
 )
 def load_question_files(value):
     regex = "<(.*)><(.*)><(.*)>"
@@ -240,7 +245,24 @@ def load_question_files(value):
         gr = res.groups()
         file = gr[2]
         graph_utils.load_file("../resources/" + file)
-        return graph_utils.get_dash_graph(), generate_question_graph(nlp(gr[1]))
+        return graph_utils.get_dash_graph(), generate_question_graph(nlp(gr[1])), False, False
+    return None, None, True, True
+
+
+@app.callback(
+    Output("modal-kg", "is_open"),
+    Input("open-kg", "n_clicks")
+)
+def open_kg(n_clicks):
+    return n_clicks > 0
+
+
+@app.callback(
+    Output("modal-qg", "is_open"),
+    Input("open-qg", "n_clicks")
+)
+def open_qg(n_clicks):
+    return n_clicks > 0
 
 
 if __name__ == '__main__':

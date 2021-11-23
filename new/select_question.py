@@ -1,6 +1,6 @@
 import json
 
-from dash import dcc, html
+from dash import dcc
 
 
 def load_questions():
@@ -16,14 +16,10 @@ def load_questions():
     return questions
 
 
-question_select = html.Div(id='output-select-div',
-                           style={'width': '100%', 'display': 'flex', 'alignItems': 'center',
-                                  'justifyContent': 'center', 'margin': '8px'}, children=[
-        dcc.Dropdown(id='input-dropdown',
-                     placeholder='Select question',
-                     style={'width': 470},
-                     value='',
-                     clearable=False,
-                     searchable=True,
-                     options=load_questions())
-    ])
+question_select = dcc.Dropdown(id='input-dropdown',
+                               placeholder='Select question',
+                               style={'width': "100%"},
+                               value='',
+                               clearable=False,
+                               searchable=True,
+                               options=load_questions())
