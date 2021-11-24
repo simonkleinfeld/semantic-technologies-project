@@ -36,8 +36,11 @@ app.layout = html.Div([
                 'textAlign': 'center',
             }
         )), justify="center", align="center", style={"margin": "8px"}),
-    dbc.Row(
-        dbc.Col(question_select, width=4), justify="center", align="center", style={"margin": "8px"}),
+    dbc.Row([
+        dbc.Col(question_select, width=4),
+        dbc.Col(dbc.Button("?", id="open-help", n_clicks=0), width=1)],
+        justify="center",
+        align="center", style={"margin": "8px"}),
     dbc.Row([
         dbc.Col(
             dbc.Button("Open knowledge graph", id="open-kg", n_clicks=0, disabled=True),
@@ -61,6 +64,19 @@ app.layout = html.Div([
         ],
         id="modal-qg",
         fullscreen=True,
+    ),
+    dbc.Offcanvas(
+        html.P(
+            "This is a question understanding interface. "
+            "You can select one of the questions using the select item in the middle."
+            "After you selected a question you can display the corresponding subset of the question graph (left button)"
+            "or the generated question graph for this question (right button)."
+            "It is also possible to edit the question graph e.g. adding/deleting nodes or edges. "
+            "Labels of edges and nodes can be changed."),
+        id="help-menu",
+        title="Help Menu",
+        is_open=False,
+        placement="end"
     )
 ], style={"height": "100vh", "overflowY": "hidden", "overflowX": "hidden"})
 
@@ -260,6 +276,14 @@ def open_kg(n_clicks):
 @app.callback(
     Output("modal-qg", "is_open"),
     Input("open-qg", "n_clicks")
+)
+def open_qg(n_clicks):
+    return n_clicks > 0
+
+
+@app.callback(
+    Output("help-menu", "is_open"),
+    Input("open-help", "n_clicks")
 )
 def open_qg(n_clicks):
     return n_clicks > 0
