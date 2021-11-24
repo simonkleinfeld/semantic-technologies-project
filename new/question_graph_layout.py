@@ -20,7 +20,11 @@ question_graph_layout = html.Div([
         id='question-graph',
         elements=[],
         layout={
-            'name': 'breadthfirst'
+            'name': 'cose-bilkent',
+            'animate': False,
+            'nodeRepulsion': 20000,
+            'idealEdgeLength': 500,
+            'nodeDimensionsIncludeLabels': True
         },
         style={
             "width": "100%",
