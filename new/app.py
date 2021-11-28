@@ -253,6 +253,7 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
     Output('question-graph', 'elements'),
     Output('open-kg', 'disabled'),
     Output('open-qg', 'disabled'),
+    Output('knowledge-graph', 'layout'),
 )
 def load_question_files(value):
     regex = "<(.*)><(.*)><(.*)>"
@@ -260,9 +261,23 @@ def load_question_files(value):
     if res is not None:
         gr = res.groups()
         file = gr[2]
-        graph_utils.load_file("../resources/" + file)
-        return graph_utils.get_dash_graph(), generate_question_graph(nlp(gr[1])), False, False
-    return None, None, True, True
+        lines = graph_utils.load_file("../resources/" + file)
+
+        if lines <= 500:
+            layout = {
+                'name': 'cose-bilkent',
+                'animate': False,
+                'nodeRepulsion': 20000,
+                'idealEdgeLength': 500,
+                'nodeDimensionsIncludeLabels': True
+            }
+        else:
+            layout = {
+                'name': 'concentric',
+            }
+
+        return graph_utils.get_dash_graph(), generate_question_graph(nlp(gr[1])), False, False, layout
+    return None, None, True, True, None
 
 
 @app.callback(

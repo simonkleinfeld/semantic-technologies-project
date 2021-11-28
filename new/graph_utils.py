@@ -26,6 +26,7 @@ class GraphUtils:
         return string
 
     def load_file(self, file):
+        lines_count = 0
         file1 = open(file, 'r')
         lines = file1.readlines()
         regex = "<(.*)>\s<(.*)>\s<(.*)>"
@@ -33,6 +34,7 @@ class GraphUtils:
         self.graph = Graph()
         existing_nodes = set()
         for line in lines:
+            lines_count += 1
             res = re.match(regex, line)
             if res is not None:
                 gr = res.groups()
@@ -52,6 +54,7 @@ class GraphUtils:
                 p = self.convert_uri_to_string_label(pred)
                 pl = p.split(" ")
                 self.graph.add_edge((subject, obj), p)
+        return lines_count
 
     def get_dash_graph(self):
         return self.graph.get_dash_graph()
