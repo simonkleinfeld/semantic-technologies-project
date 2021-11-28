@@ -11,7 +11,7 @@ from new.graph_utils import GraphUtils
 from new.knowledge_graph_layout import knowledge_graph_layout
 from new.question_graph_layout import question_graph_layout
 from new.select_question import question_select
-from new.svo_triple_approach import generate_question_graph
+from new.graph_sent_merge_filter_approach import generate_question_graph_v2
 
 ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
 
@@ -276,7 +276,7 @@ def load_question_files(value):
                 'name': 'concentric',
             }
 
-        return graph_utils.get_dash_graph(), generate_question_graph(nlp(gr[1])), False, False, layout
+        return graph_utils.get_dash_graph(), generate_question_graph_v2(nlp(gr[1])), False, False, layout
     return None, None, True, True, None
 
 
