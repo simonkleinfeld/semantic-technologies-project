@@ -38,7 +38,8 @@ def generate_uni_gram_graph_from_chunks(chunk_list, chunk_root_list, root_text):
 
 
 def generate_question_graph(processed_tokens):
-    return form_question_graph_with_noun_chunks(processed_tokens)
+    return \
+        (processed_tokens)
 
 
 def isNegated(tok):
