@@ -5,7 +5,7 @@ from time import sleep
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 if __name__ == '__main__':
-    question_ids = [18]
+    question_ids = [22, 24]
     regex = "(<.*>)\s(<.*>)\s(<.*>)"
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     for qid in question_ids:
