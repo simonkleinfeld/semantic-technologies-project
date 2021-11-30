@@ -1,9 +1,5 @@
 from typing import Tuple
 
-import numpy
-from numpy import dot
-from numpy.linalg import norm
-
 
 class Graph:
 

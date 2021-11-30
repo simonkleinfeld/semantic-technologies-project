@@ -1,9 +1,10 @@
 from enum import Enum
-from new.graph_utils import Graph
-import spacy
 
-#https://universaldependencies.org/u/pos/
-#https://universaldependencies.org/docs/en/dep/
+from new.graph_utils import Graph
+
+
+# https://universaldependencies.org/u/pos/
+# https://universaldependencies.org/docs/en/dep/
 
 
 class CHUNK_PROCESSING_ALGORITHM(Enum):
@@ -50,7 +51,8 @@ def isNegated(tok):
     return False, dep.lower_
 
 
-def form_question_graph_with_noun_chunks(processed_tokens, chunk_processing_algorithm=CHUNK_PROCESSING_ALGORITHM.UNI_GRAM_USING_ROOTS):
+def form_question_graph_with_noun_chunks(processed_tokens,
+                                         chunk_processing_algorithm=CHUNK_PROCESSING_ALGORITHM.UNI_GRAM_USING_ROOTS):
     ROOT = "ROOT"
     chunk_list_roots = []
     chunk_list = []
@@ -97,12 +99,11 @@ def form_question_graph_with_noun_chunks(processed_tokens, chunk_processing_algo
                 neg, t = isNegated(max_v)
                 root_type = max_v
                 if neg:
-                    root_text = t + " "+max_v.text
+                    root_text = t + " " + max_v.text
                 else:
                     root_text = max_v.text
     if chunk_processing_algorithm == CHUNK_PROCESSING_ALGORITHM.UNI_GRAM_USING_ROOTS:
         return generate_uni_gram_graph_from_chunks(chunk_list, chunk_list_roots, root_text)
-
 
 
 def get_qsvo_triple_from_root(question):
@@ -112,7 +113,7 @@ def get_qsvo_triple_from_root(question):
     OBJECT_POS = ['NOUN', 'PROPN']
     ROOT = "ROOT"
     processed_tokens = []
-    qsvo = {'q' : '', 's': '', 'v': '', 'o': ''}
+    qsvo = {'q': '', 's': '', 'v': '', 'o': ''}
     root_tok = [tok for tok in processed_tokens if tok.pos_ == ROOT][0]
     if root_tok.pos_ == 'VERB':
         qsvo['v'] = root_tok.lemma

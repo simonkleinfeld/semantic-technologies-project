@@ -5,7 +5,7 @@ from time import sleep
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 if __name__ == '__main__':
-    question_ids = [24]
+    question_ids = [18]
     regex = "(<.*>)\s(<.*>)\s(<.*>)"
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
     for qid in question_ids:
@@ -30,8 +30,10 @@ if __name__ == '__main__':
         n = 50
         uris = list(uris)
         batches = [uris[i:i + n] for i in range(0, len(uris), n)]
-
-        for batch in batches:
+        nr_batches = len(batches)
+        for i in range(nr_batches):
+            print("Start batch", str(i), "of", str(nr_batches))
+            batch = batches[i]
             sparql_uris = ', '.join(str(e) for e in batch)
 
             query = """
@@ -50,7 +52,7 @@ if __name__ == '__main__':
                 label = res['label']['value']
                 labels.add(label)
             sleep(10)
-            print("batch")
+            print("End batch", str(i), "of", str(nr_batches))
         j = {"labels": list(labels)}
         with open('resources/question_labels_' + str(qid) + '.json', 'w', encoding='utf8') as json_d:
             json.dump(j, json_d)
