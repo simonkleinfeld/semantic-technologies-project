@@ -12639,7 +12639,7 @@
 <http://dbpedia.org/resource/Hisao_Yamada>	<http://dbpedia.org/ontology/almaMater>	<http://dbpedia.org/resource/University_of_Pennsylvania>
 <http://en.wikipedia.org/wiki/Mary_Jane_Irwin>	<http://xmlns.com/foaf/0.1/primaryTopic>	<http://dbpedia.org/resource/Mary_Jane_Irwin>
 <http://dbpedia.org/resource/Benson_Samuel>	<http://dbpedia.org/ontology/field>	<http://dbpedia.org/resource/Computer_science>
-<http://dbpedia.org/resource/Introduction_to_Automata_Theory,_Languages,_and_Computation>	<http://dbpedia.org/ontology/nonFictionSubject>	<http://dbpedia.org/resource/Computer_science>
+<http://dbpedia.org/resource/Introduction_to_Automata_Theory,_Languages,_and_Computation>	<http://dbpedia.org/ontology/nonFictionSubject>
 <http://dbpedia.org/resource/Pierre_Geneves>	<http://dbpedia.org/ontology/field>	<http://dbpedia.org/resource/Computer_science>
 <http://dbpedia.org/resource/Alexander_Lubotzky>	<http://dbpedia.org/ontology/birthPlace>	<http://dbpedia.org/resource/Tel_Aviv>
 <http://dbpedia.org/resource/Conor_McBride>	<http://xmlns.com/foaf/0.1/isPrimaryTopicOf>	<http://en.wikipedia.org/wiki/Conor_McBride>
@@ -15903,7 +15903,6 @@
 <http://dbpedia.org/resource/Arturo_Azcorra>	<http://dbpedia.org/ontology/birthPlace>	<http://dbpedia.org/resource/Spain>
 <http://dbpedia.org/resource/Andrei_Knyazev_(mathematician)>	<http://dbpedia.org/ontology/field>	<http://dbpedia.org/resource/Numerical_analysis>
 <http://dbpedia.org/resource/Leonidas_J._Guibas>	<http://dbpedia.org/ontology/doctoralAdvisor>	<http://dbpedia.org/resource/Donald_Knuth>
-<http://dbpedia.org/resource/Coinsecure>	<http://dbpedia.org/ontology/keyPerson>	<http://dbpedia.org/resource/Benson_Samuel>
 <http://en.wikipedia.org/wiki/Benson_Samuel>	<http://xmlns.com/foaf/0.1/primaryTopic>	<http://dbpedia.org/resource/Benson_Samuel>
 <http://en.wikipedia.org/wiki/Abdul_Razaque>	<http://xmlns.com/foaf/0.1/primaryTopic>	<http://dbpedia.org/resource/Abdul_Razaque>
 <http://dbpedia.org/resource/Panta_Rhei_(band)>	<http://dbpedia.org/ontology/formerBandMember>	<http://dbpedia.org/resource/Alex_Szalay>
