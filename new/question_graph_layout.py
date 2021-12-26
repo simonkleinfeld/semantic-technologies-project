@@ -15,26 +15,36 @@ question_graph_layout = html.Div([
                              ),
                 html.Button('Delete', id='delete-button', n_clicks=0, disabled=True),
                 html.Button('Add nodes/edges', id='add-button', n_clicks=0, disabled=False),
+                html.Button('Export', id='export-button', n_clicks=0, disabled=False),
             ]))),
-    dbc.Row(dbc.Col(cyto.Cytoscape(
-        id='question-graph',
-        elements=[],
-        layout={
-            'name': 'cose-bilkent',
-            'animate': False,
-            'nodeRepulsion': 2000,
-            'idealEdgeLength': 50,
-            'nodeDimensionsIncludeLabels': True
-        },
-        style={
-            "width": "100%",
-            "height": "calc(100vh - 150px)",
-        },
-        stylesheet=[
-            {'selector': 'edge', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
-            {'selector': 'node', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
-        ]
-    ), width=12)),
+    dbc.Row(
+        children=[
+            dbc.Col(cyto.Cytoscape(
+                id='question-graph',
+                elements=[],
+                layout={
+                    'name': 'cose-bilkent',
+                    'animate': False,
+                    'nodeRepulsion': 2000,
+                    'idealEdgeLength': 50,
+                    'nodeDimensionsIncludeLabels': True
+                },
+                style={
+                    "width": "100%",
+                    "height": "calc(100vh - 210px)",
+                },
+                stylesheet=[
+                    {'selector': 'edge', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
+                    {'selector': 'node', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
+                ]
+            ), width=12),
+            dbc.Col(
+                width=8),
+            dbc.Col(
+                dbc.Alert("Export successfull", color="success", id="modal-export", is_open=False, dismissable=True),
+                width=4)
+        ],
+    ),
     dbc.Modal(
         [
             dbc.ModalHeader(dbc.ModalTitle("Add nodes and egdes"), close_button=True),

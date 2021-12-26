@@ -7,11 +7,11 @@ import spacy
 from dash import Input, Output, State, html
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
+from new.graph_sent_merge_filter_approach import generate_question_graph_v2
 from new.graph_utils import GraphUtils
 from new.knowledge_graph_layout import knowledge_graph_layout
 from new.question_graph_layout import question_graph_layout
 from new.select_question import question_select
-from new.graph_sent_merge_filter_approach import generate_question_graph_v2
 
 ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
 
@@ -66,18 +66,26 @@ app.layout = html.Div([
         fullscreen=True,
     ),
     dbc.Offcanvas(
-        html.P(
-            "This is a question understanding interface. "
-            "You can select one of the questions using the select item in the middle."
-            "After you selected a question you can display the corresponding subset of the question graph (left button)"
-            "or the generated question graph for this question (right button)."
-            "It is also possible to edit the question graph e.g. adding/deleting nodes or edges. "
-            "Labels of edges and nodes can be changed."),
+        children=[
+            html.P("Welcome to the question understanding interface, following features are currently supported"),
+            html.Ol(
+                [
+                    html.Li("Selection of a fixed sized set of questions"),
+                    html.Li("Visualizing a subset of a knowledge graph, corresponding to the question"),
+                    html.Li("Generating a question graph for this question"),
+                    html.Li("Editing the generated question graph"),
+                    html.Li("Export the question graph to the local filesystem")
+
+                ]
+
+            ),
+        ],
         id="help-menu",
         title="Help Menu",
         is_open=False,
         placement="end"
-    )
+    ),
+
 ], style={"height": "100vh", "overflowY": "hidden", "overflowX": "hidden"})
 
 
@@ -302,6 +310,16 @@ def open_qg(n_clicks):
 )
 def open_qg(n_clicks):
     return n_clicks > 0
+
+
+@app.callback(
+    Input('export-button', 'n_clicks'),
+    Output('modal-export', 'children'),
+    Output('modal-export', 'is_open'),
+)
+def export_question_graph(n_clicks):
+    if (n_clicks > 0):
+        return "Question graph exported to: FILE_PATH", True
 
 
 if __name__ == '__main__':
