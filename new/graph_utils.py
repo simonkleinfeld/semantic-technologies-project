@@ -33,6 +33,7 @@ class GraphUtils:
         self.labels = set()
         self.graph = Graph()
         existing_nodes = set()
+        rdf_list = []
         for line in lines:
             lines_count += 1
             res = re.match(regex, line)
@@ -41,10 +42,11 @@ class GraphUtils:
                 subject = gr[0]
                 pred = gr[1]
                 obj = gr[2]
+                rdf_list.append((subject, pred, obj))
                 if subject not in existing_nodes:
                     s = self.convert_uri_to_string_label(subject)
                     sl = s.split(" ")
-                    self.graph.add_node(subject, s)
+                    self.graph.add_node(subject, subject)
                     existing_nodes.add(subject)
                 if obj not in existing_nodes:
                     s = self.convert_uri_to_string_label(obj)
@@ -54,7 +56,7 @@ class GraphUtils:
                 p = self.convert_uri_to_string_label(pred)
                 pl = p.split(" ")
                 self.graph.add_edge((subject, obj), p)
-        return lines_count
+        return lines_count, rdf_list
 
     def get_dash_graph(self):
         return self.graph.get_dash_graph()

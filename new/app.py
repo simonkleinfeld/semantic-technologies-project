@@ -7,7 +7,7 @@ import spacy
 from dash import Input, Output, State, html
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
-from new.graph_sent_merge_filter_approach import generate_question_graph_v2
+from new.graph_sent_merge_filter_approach import generate_question_graph_v2, export_qg_with_kg_annotations
 from new.graph_utils import GraphUtils
 from new.knowledge_graph_layout import knowledge_graph_layout
 from new.question_graph_layout import question_graph_layout
@@ -269,8 +269,7 @@ def load_question_files(value):
     if res is not None:
         gr = res.groups()
         file = gr[2]
-        lines = graph_utils.load_file("../resources/" + file)
-
+        lines, rdf_list = graph_utils.load_file("../resources/" + file)
         if lines <= 500:
             layout = {
                 'name': 'cose-bilkent',
@@ -284,7 +283,7 @@ def load_question_files(value):
                 'name': 'concentric',
             }
 
-        return graph_utils.get_dash_graph(), generate_question_graph_v2(nlp(gr[1])), False, False, layout
+        return graph_utils.get_dash_graph(), generate_question_graph_v2(nlp(gr[1]), rdf_list), False, False, layout
     return None, None, True, True, None
 
 
