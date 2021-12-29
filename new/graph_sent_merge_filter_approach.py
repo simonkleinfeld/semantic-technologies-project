@@ -187,7 +187,8 @@ def write_uri_list_to_file(uri_list, file_id):
     for l in uri_list:
         total_str = ""
         for e in l:
-            total_str += "{}{}{}".format("<", e, ">")
+            total_str += "{}{}{}\t".format("<", e, ">")
+        total_str = total_str.rstrip()
         total_str += "\n"
         f.write(total_str)
     f.close()
