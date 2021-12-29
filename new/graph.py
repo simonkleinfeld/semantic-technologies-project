@@ -7,6 +7,9 @@ class Graph:
         self.node_neighbors = {}  # Pairing: Node to Neighbors
         self.edge_attr = {}
         self.node_attr = {}
+        self.triplets = None
+        self.id = None
+        self.linearQg = None
 
     def get_edge_vec(self, edge: Tuple[str, str]):
         return self.edge_attr.get(edge)['vec']

@@ -18,6 +18,10 @@ ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
 app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform()],
                 external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+graph_id_ = ""
+graph_triplets_ = ""
+graph_ = None
+
 nlp = spacy.load("en_core_web_sm")
 graph_utils = GraphUtils()
 app.title = "Question understanding interface"
@@ -264,6 +268,9 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
     Output('knowledge-graph', 'layout'),
 )
 def load_question_files(value):
+    global graph_
+    global graph_triplets_
+    global graph_id_
     regex = "<(.*)><(.*)><(.*)>"
     res = re.match(regex, value)
     if res is not None:
@@ -282,8 +289,11 @@ def load_question_files(value):
             layout = {
                 'name': 'concentric',
             }
+        graph_triplets_ = rdf_list
+        graph_id_ = gr[0]
+        graph_ = generate_question_graph_v2(nlp(gr[1]))
 
-        return graph_utils.get_dash_graph(), generate_question_graph_v2(nlp(gr[1]), rdf_list), False, False, layout
+        return graph_utils.get_dash_graph(), graph_, False, False, layout
     return None, None, True, True, None
 
 
@@ -317,8 +327,14 @@ def open_qg(n_clicks):
     Output('modal-export', 'is_open'),
 )
 def export_question_graph(n_clicks):
-    if (n_clicks > 0):
-        return "Question graph exported to: FILE_PATH", True
+    global graph_
+    global graph_triplets_
+    global graph_id_
+    if n_clicks > 0:
+        if graph_id_ is not None and graph_triplets_ is not None and graph_ is not None:
+            res = export_qg_with_kg_annotations(graph_, graph_triplets_, graph_id_)
+            return "Question graph exported to: {}".format(res), True
+        return "Something went wrong"
 
 
 if __name__ == '__main__':

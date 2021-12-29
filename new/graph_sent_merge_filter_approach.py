@@ -148,7 +148,7 @@ def extract_particles_and_adpositions_from_sent(doc):
     return p_adp_list
 
 
-def generate_question_graph_v2(doc, rdf_triples):
+def generate_question_graph_v2(doc):
     linear_graph = construct_linear_sent_graph(doc)
     entities_str_lab = construct_entities_list(doc)
     print(entities_str_lab)
@@ -167,7 +167,6 @@ def generate_question_graph_v2(doc, rdf_triples):
     for p in part_adposition_list:
         linear_graph = filter_items(linear_graph, [p], p)
     r = generate_dash_graph_from_linear(linear_graph)
-    export_qg_with_kg_annotations(r, rdf_triples)
     return r
 
 
@@ -182,8 +181,9 @@ def convert_uri_to_string_label(uri):
     return string
 
 
-def write_uri_list_to_file(uri_list):
-    f = open("qg_output.nxhd", "+w")
+def write_uri_list_to_file(uri_list, file_id):
+    file_name = "qg_output_{}.nxhd".format(file_id)
+    f = open(file_name, "+w")
     for l in uri_list:
         total_str = ""
         for e in l:
@@ -191,9 +191,10 @@ def write_uri_list_to_file(uri_list):
         total_str += "\n"
         f.write(total_str)
     f.close()
+    return file_name
 
 
-def export_qg_with_kg_annotations(linear_qg, rdf_triples):
+def export_qg_with_kg_annotations(linear_qg, rdf_triples, id):
     potential_uri_list = []
     for s in linear_qg:
         label = s['data']['label']
@@ -237,7 +238,7 @@ def export_qg_with_kg_annotations(linear_qg, rdf_triples):
             kg_qg_list.append(best_matching_triple)
     print(len(potential_uri_list))
     print(len(kg_qg_list))
-    write_uri_list_to_file(kg_qg_list)
+    return write_uri_list_to_file(kg_qg_list, id)
 
 
 #print(generate_question_graph_v2(nlp("Which electronics companies were founded in Beijing?"), []))
