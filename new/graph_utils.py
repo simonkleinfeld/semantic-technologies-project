@@ -27,7 +27,7 @@ class GraphUtils:
 
     def load_file(self, file):
         lines_count = 0
-        file1 = open(file, 'r')
+        file1 = open(file, 'r', encoding='utf8')
         lines = file1.readlines()
         regex = "<(.*)>\s<(.*)>\s<(.*)>"
         self.labels = set()

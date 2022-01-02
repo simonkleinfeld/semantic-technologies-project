@@ -7,7 +7,7 @@ import spacy
 from dash import Input, Output, State, html
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
-from new.graph_sent_merge_filter_approach import generate_question_graph_v2, export_qg_with_kg_annotations
+from new.graph_sent_merge_filter_approach import generate_question_graph_v2, export_qg_with_kg_annotations, export_v2
 from new.graph_utils import GraphUtils
 from new.knowledge_graph_layout import knowledge_graph_layout
 from new.question_graph_layout import question_graph_layout
@@ -20,7 +20,6 @@ app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform
 
 graph_id_ = ""
 graph_triplets_ = ""
-graph_ = None
 
 nlp = spacy.load("en_core_web_sm")
 graph_utils = GraphUtils()
@@ -268,10 +267,8 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
     Output('question-graph', 'elements'),
     Output('open-kg', 'disabled'),
     Output('open-qg', 'disabled'),
-    Output('knowledge-graph', 'layout'),
 )
 def load_question_files(value):
-    global graph_
     global graph_triplets_
     global graph_id_
     regex = "<(.*)><(.*)><(.*)>"
@@ -279,25 +276,11 @@ def load_question_files(value):
     if res is not None:
         gr = res.groups()
         file = gr[2]
-        lines, rdf_list = graph_utils.load_file("../resources/" + file)
-        if lines <= 500:
-            layout = {
-                'name': 'cose-bilkent',
-                'animate': False,
-                'nodeRepulsion': 20000,
-                'idealEdgeLength': 500,
-                'nodeDimensionsIncludeLabels': True
-            }
-        else:
-            layout = {
-                'name': 'concentric',
-            }
-        graph_triplets_ = rdf_list
+        graph_triplets_ = graph_utils.load_file("../resources/" + file)
         graph_id_ = gr[0]
         graph_ = generate_question_graph_v2(nlp(gr[1]))
 
-        return graph_utils.get_dash_graph(), graph_, False, False, layout
-    return None, None, True, True, None
+        return graph_utils.get_dash_graph(), graph_, False, False
 
 
 @app.callback(
@@ -327,15 +310,15 @@ def open_qg(n_clicks):
 
 @app.callback(
     Input('export-button', 'n_clicks'),
+    State('question-graph', 'elements'),
     Output('question-graph-footer', 'children'),
 )
-def export_question_graph(n_clicks):
-    global graph_
+def export_question_graph(n_clicks, elements):
     global graph_triplets_
     global graph_id_
     if n_clicks > 0:
-        if graph_id_ is not None and graph_triplets_ is not None and graph_ is not None:
-            res = export_qg_with_kg_annotations(graph_, graph_triplets_, graph_id_)
+        if graph_id_ is not None and graph_triplets_ is not None:
+            res = export_v2(elements, graph_id_)
             return "Question graph exported to: {}".format(res)
         return "Something went wrong"
 

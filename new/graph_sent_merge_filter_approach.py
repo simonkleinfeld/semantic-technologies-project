@@ -129,8 +129,8 @@ def generate_dash_graph_from_linear(linear_graph):
         if type(n) == tuple:
             prev_placeholder_edge = n[1]
         else:
-            g.add_node(n,n)
-            if prev_node != None:
+            g.add_node(n, n)
+            if prev_node is not None:
                 if prev_placeholder_edge is not None:
                     g.add_edge((n,prev_node), prev_placeholder_edge)
                     prev_placeholder_edge = None
@@ -182,6 +182,7 @@ def convert_uri_to_string_label(uri):
 
 
 def write_uri_list_to_file(uri_list, file_id):
+    print(uri_list)
     file_name = "qg_output_{}.nxhd".format(file_id)
     file_dir = os.path.dirname(os.path.realpath('__file__'))
     file_path = os.path.join(file_dir, '..\\output\\')
@@ -199,7 +200,7 @@ def write_uri_list_to_file(uri_list, file_id):
     return file_path
 
 
-def export_qg_with_kg_annotations(linear_qg, rdf_triples, id):
+def export_qg_with_kg_annotations(linear_qg, rdf_triples, file_id):
     potential_uri_list = []
     for s in linear_qg:
         label = s['data']['label']
@@ -243,7 +244,43 @@ def export_qg_with_kg_annotations(linear_qg, rdf_triples, id):
             kg_qg_list.append(best_matching_triple)
     print(len(potential_uri_list))
     print(len(kg_qg_list))
-    return write_uri_list_to_file(kg_qg_list, id)
+    return write_uri_list_to_file(kg_qg_list, file_id)
+
+
+def export_v2(elements, file_id):
+    nodes = {}
+    edges = []
+
+    urls = []
+
+    for element in elements:
+        data = element['data']
+        if 'source' in data:
+            edges.append(data)
+        else:
+            nodes[data['id']] = data
+
+    prefix = "http://dbpedia.org/resource/"
+    for edge in edges:
+        subj = edge['target']
+        pred = edge['source']
+        obj = edge['label']
+
+        subj = subj.replace(" ", "_")
+        pred = pred.replace(" ", "_")
+        obj = obj.replace(" ", "_")
+
+        subj = prefix + subj.capitalize()
+        pred = prefix + pred.capitalize()
+        obj = prefix + obj.capitalize()
+
+        urls.append([subj, obj, pred])
+    return write_uri_list_to_file(urls, file_id)
+
+
+
+
+
 
 
 #print(generate_question_graph_v2(nlp("Which electronics companies were founded in Beijing?"), []))
