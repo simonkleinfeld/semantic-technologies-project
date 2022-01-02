@@ -40,10 +40,6 @@ question_graph_layout = html.Div([
             ), width=12)
         ],
     ),
-    dbc.Row(
-        dbc.Col(
-            dbc.Alert("Export successfull", color="success", id="modal-export", is_open=False, dismissable=True, duration=5000)),
-    ),
     dbc.Modal(
         [
             dbc.ModalHeader(dbc.ModalTitle("Add nodes and egdes"), close_button=True),

@@ -56,7 +56,9 @@ app.layout = html.Div([
     dbc.Modal(
         [
             dbc.ModalHeader(dbc.ModalTitle("Subset Knowledge Graph")),
-            dbc.ModalBody(knowledge_graph_layout)
+            dbc.ModalBody(knowledge_graph_layout),
+            dbc.ModalFooter(children=[html.Div(
+                "For performance reasons, a simple, concentric, layout is used from 500 nodes.")])
         ],
         id="modal-kg",
         fullscreen=True,
@@ -64,7 +66,8 @@ app.layout = html.Div([
     dbc.Modal(
         [
             dbc.ModalHeader(dbc.ModalTitle("Question Graph")),
-            dbc.ModalBody(question_graph_layout, style={'overflow': 'hidden'})
+            dbc.ModalBody(question_graph_layout),
+            dbc.ModalFooter(id="question-graph-footer")
         ],
         id="modal-qg",
         fullscreen=True,
@@ -307,10 +310,11 @@ def open_kg(n_clicks):
 
 @app.callback(
     Output("modal-qg", "is_open"),
+    Output("question-graph-footer", "children"),
     Input("open-qg", "n_clicks")
 )
 def open_qg(n_clicks):
-    return n_clicks > 0
+    return n_clicks > 0, ""
 
 
 @app.callback(
@@ -323,8 +327,7 @@ def open_qg(n_clicks):
 
 @app.callback(
     Input('export-button', 'n_clicks'),
-    Output('modal-export', 'children'),
-    Output('modal-export', 'is_open'),
+    Output('question-graph-footer', 'children'),
 )
 def export_question_graph(n_clicks):
     global graph_
@@ -333,7 +336,7 @@ def export_question_graph(n_clicks):
     if n_clicks > 0:
         if graph_id_ is not None and graph_triplets_ is not None and graph_ is not None:
             res = export_qg_with_kg_annotations(graph_, graph_triplets_, graph_id_)
-            return "Question graph exported to: {}".format(res), True
+            return "Question graph exported to: {}".format(res)
         return "Something went wrong"
 
 
