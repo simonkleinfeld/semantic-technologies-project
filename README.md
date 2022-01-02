@@ -1,26 +1,9 @@
 # Question understanding interface
 This repository contains code for the project of the course SE Research Seminar: Semantic Technology at the University of Innsbruck during the winter term 2021.
 
-An UI with an input field for a question is provided. Below this input field following features are provided:
-
-
-Tasks:
-* List all named entities
-* Display a dependency graph 
-* Show sub-graph of an RDF graph around topic entity of question
-* Build a question graph and allow user modifications of it
-* Do graph matching with the question graph over the RDF graph either as done in gAnswer or similiar approaches or our own
-* Display top-k matching subgraphs 
-* Optional: Make top-k matching subgraphs interactable
-* Optional: Do evaluation of results
-* Optional: Form natural language answer from top-k matching subgraphs
-* Optional: Support multiple forms of RDF graphs
-
-Open Issues:
-* Matching/Generation approach
-* Datasets 
+A user interface is offered in which one can choose from a list of questions. Subsequently, a sub-graph (in the environment of the question) of a knowledg graph can be displayed, or a question graph can be generated for this question. This question graph can be exported.
 
 Technical aspects:
 * Programming language: Python
-* UI Framework/Graph Framework: Dash-Plotly
+* UI Framework/Graph Framework: Dash-Plotly, Bootstrap components for plotly
 * NLP Framework: spacy

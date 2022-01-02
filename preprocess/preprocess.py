@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
     questions_preprocessed = []
 
-    with open('resources/qald-6-test-multilingual.json', encoding="utf8") as json_file:
+    with open('../resources/qald-6-test-multilingual.json', encoding="utf8") as json_file:
         data = json.load(json_file)
         questions = data['questions']
         for question in questions:
@@ -20,5 +20,5 @@ if __name__ == '__main__':
                             'question': multilang_q['string'],
                             'file': 'question_{}.nxhd'.format(qid)})
                         break
-    with open('resources/questions.json', 'w', encoding='utf8') as json_d:
+    with open('../resources/questions.json', 'w', encoding='utf8') as json_d:
         json.dump({'questions': questions_preprocessed}, json_d)
