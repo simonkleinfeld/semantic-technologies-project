@@ -37,13 +37,12 @@ question_graph_layout = html.Div([
                     {'selector': 'edge', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
                     {'selector': 'node', 'style': {'label': 'data(label)'}, 'text-wrap': 'wrap'},
                 ]
-            ), width=12),
-            dbc.Col(
-                width=8),
-            dbc.Col(
-                dbc.Alert("Export successfull", color="success", id="modal-export", is_open=False, dismissable=True),
-                width=4)
+            ), width=12)
         ],
+    ),
+    dbc.Row(
+        dbc.Col(
+            dbc.Alert("Export successfull", color="success", id="modal-export", is_open=False, dismissable=True, duration=5000)),
     ),
     dbc.Modal(
         [

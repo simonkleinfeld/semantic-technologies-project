@@ -64,7 +64,7 @@ app.layout = html.Div([
     dbc.Modal(
         [
             dbc.ModalHeader(dbc.ModalTitle("Question Graph")),
-            dbc.ModalBody(question_graph_layout)
+            dbc.ModalBody(question_graph_layout, style={'overflow': 'hidden'})
         ],
         id="modal-qg",
         fullscreen=True,
