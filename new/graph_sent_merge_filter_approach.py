@@ -3,7 +3,7 @@ from urllib.parse import unquote, urlparse
 from new.graph_utils import Graph
 from thefuzz import fuzz
 import spacy
-
+import os
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -183,7 +183,11 @@ def convert_uri_to_string_label(uri):
 
 def write_uri_list_to_file(uri_list, file_id):
     file_name = "qg_output_{}.nxhd".format(file_id)
-    f = open(file_name, "+w")
+    file_dir = os.path.dirname(os.path.realpath('__file__'))
+    file_path = os.path.join(file_dir, '..\\output\\')
+    file_path = file_path + file_name
+    file_path = file_path.replace("\\new\\..\\", "\\")
+    f = open(file_path, "w")
     for l in uri_list:
         total_str = ""
         for e in l:
@@ -192,7 +196,7 @@ def write_uri_list_to_file(uri_list, file_id):
         total_str += "\n"
         f.write(total_str)
     f.close()
-    return file_name
+    return file_path
 
 
 def export_qg_with_kg_annotations(linear_qg, rdf_triples, id):
