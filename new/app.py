@@ -20,6 +20,7 @@ app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform
 
 graph_id_ = ""
 graph_triplets_ = ""
+graph_ = None
 
 nlp = spacy.load("en_core_web_sm")
 graph_utils = GraphUtils()
@@ -271,12 +272,13 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
 def load_question_files(value):
     global graph_triplets_
     global graph_id_
+    global graph_
     regex = "<(.*)><(.*)><(.*)>"
     res = re.match(regex, value)
     if res is not None:
         gr = res.groups()
         file = gr[2]
-        graph_triplets_ = graph_utils.load_file("../resources/" + file)
+        _, graph_triplets_ = graph_utils.load_file("../resources/" + file)
         graph_id_ = gr[0]
         graph_ = generate_question_graph_v2(nlp(gr[1]))
 
@@ -310,15 +312,15 @@ def open_qg(n_clicks):
 
 @app.callback(
     Input('export-button', 'n_clicks'),
-    State('question-graph', 'elements'),
     Output('question-graph-footer', 'children'),
 )
-def export_question_graph(n_clicks, elements):
+def export_question_graph(n_clicks):
     global graph_triplets_
     global graph_id_
+    global graph_
     if n_clicks > 0:
-        if graph_id_ is not None and graph_triplets_ is not None:
-            res = export_v2(elements, graph_id_)
+        if graph_id_ is not None and graph_triplets_ is not None and graph_ is not None:
+            res = export_qg_with_kg_annotations(graph_, graph_triplets_, graph_id_)
             return "Question graph exported to: {}".format(res)
         return "Something went wrong"
 
