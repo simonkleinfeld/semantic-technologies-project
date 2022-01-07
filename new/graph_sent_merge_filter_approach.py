@@ -135,9 +135,9 @@ def generate_dash_graph_from_linear(linear_graph):
                     g.add_edge((n,prev_node), prev_placeholder_edge)
                     prev_placeholder_edge = None
                 else:
-                    g.add_edge((n,prev_node), "")
+                    g.add_edge((n, prev_node), "")
             prev_node = n
-    return g.get_dash_graph()
+    return g.get_dash_graph(len(g.node_neighbors.keys()))
 
 
 def extract_particles_and_adpositions_from_sent(doc):

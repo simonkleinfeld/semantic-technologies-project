@@ -58,8 +58,8 @@ class GraphUtils:
                 self.graph.add_edge((subject, obj), p)
         return lines_count, rdf_list
 
-    def get_dash_graph(self):
-        return self.graph.get_dash_graph()
+    def get_dash_graph(self, nr_of_displayed_nodes):
+        return self.graph.get_dash_graph(nr_of_displayed_nodes)
 
     def get_rdfs_labels(self, question_id):
         with open('../resources/question_labels_' + str(question_id) + '.json', encoding="utf8") as json_file:

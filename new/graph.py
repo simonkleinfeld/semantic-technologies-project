@@ -86,10 +86,18 @@ class Graph:
     def del_edge_labeling(self, edge):
         self.edge_attr[edge].remove()
 
-    def get_dash_graph(self):
+    def get_dash_graph(self, nr_of_displayed_nodes):
         nodes = []
+        inserted_nodes = set()
+        current_nr = 0
         for v in self.node_neighbors:
+            if current_nr > nr_of_displayed_nodes:
+                break
             nodes.append({'data': {'id': v, 'label': self.node_attr[v]['label']}})
+            inserted_nodes.add(v)
+            current_nr += 1
+
         for e in self.edge_attr:
-            nodes.append({'data': {'source': e[0], 'target': e[1], 'label': self.edge_attr[e]['label']}})
+            if e[0] in inserted_nodes and e[1] in inserted_nodes:
+                nodes.append({'data': {'source': e[0], 'target': e[1], 'label': self.edge_attr[e]['label']}})
         return nodes

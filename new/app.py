@@ -7,7 +7,7 @@ import spacy
 from dash import Input, Output, State, html
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
-from new.graph_sent_merge_filter_approach import generate_question_graph_v2, export_qg_with_kg_annotations, export_v2
+from new.graph_sent_merge_filter_approach import generate_question_graph_v2, export_qg_with_kg_annotations
 from new.graph_utils import GraphUtils
 from new.knowledge_graph_layout import knowledge_graph_layout
 from new.question_graph_layout import question_graph_layout
@@ -58,7 +58,9 @@ app.layout = html.Div([
             dbc.ModalHeader(dbc.ModalTitle("Subset Knowledge Graph")),
             dbc.ModalBody(knowledge_graph_layout),
             dbc.ModalFooter(children=[html.Div(
-                "For performance reasons, a simple, concentric, layout is used from 500 nodes.")])
+                "For graphs with more than 500 nodes, only a subset of the nodes is displayed. "
+                "The number can be adjusted via the selection list above the graph. "
+                "A large number of nodes results in massive performance losses.")])
         ],
         id="modal-kg",
         fullscreen=True,
@@ -262,12 +264,40 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
         return True, elements, [new_node]
 
 
+# select-nr-of-nodes disabled
+# displayed nodes
+# list for select item
+def calculateNrOfNodes(all_nodes):
+    nodes_to_display = all_nodes
+    steps = 50
+    if all_nodes <= 500:
+        return True, nodes_to_display, []
+    if all_nodes > 1000:
+        steps = 100
+    if all_nodes > 2000:
+        steps = 150
+    current_nr = 0
+    nodes_list = []
+    while current_nr < all_nodes:
+        nodes_list.append({'label': current_nr, 'value': current_nr})
+        if current_nr <= 500:
+            nodes_to_display = current_nr
+        current_nr += steps
+
+    nodes_list.append({'label': all_nodes, 'value': all_nodes})
+
+    return False, nodes_to_display, nodes_list
+
+
 @app.callback(
     Input('input-dropdown', 'value'),
     Output('knowledge-graph', 'elements'),
     Output('question-graph', 'elements'),
     Output('open-kg', 'disabled'),
     Output('open-qg', 'disabled'),
+    Output('select-nr-of-nodes', 'disabled'),
+    Output('select-nr-of-nodes', 'value'),
+    Output('select-nr-of-nodes', 'options'),
 )
 def load_question_files(value):
     global graph_triplets_
@@ -278,11 +308,24 @@ def load_question_files(value):
     if res is not None:
         gr = res.groups()
         file = gr[2]
-        _, graph_triplets_ = graph_utils.load_file("../resources/" + file)
+        nr_of_edges, graph_triplets_ = graph_utils.load_file("../resources/" + file)
         graph_id_ = gr[0]
         graph_ = generate_question_graph_v2(nlp(gr[1]))
 
-        return graph_utils.get_dash_graph(), graph_, False, False
+        nodes_select_enabled, nodes_to_display, nodes_list = calculateNrOfNodes(nr_of_edges)
+        return graph_utils.get_dash_graph(
+            nodes_to_display), graph_, False, False, nodes_select_enabled, nodes_to_display, nodes_list
+
+
+@app.callback(
+    Input('select-nr-of-nodes', 'value'),
+    State('knowledge-graph', 'elements'),
+    Output('knowledge-graph', 'elements'),
+)
+def load_question_files_with_more_nodes(nr_of_nodes, knowledge_graph_elements):
+    if knowledge_graph_elements is not None:
+        return graph_utils.get_dash_graph(nr_of_nodes)
+    return knowledge_graph_elements
 
 
 @app.callback(
