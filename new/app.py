@@ -264,14 +264,14 @@ def add_new_edge(n_clicks, elements, from_node_id, to_node_id, edge_label, new_i
         return True, elements, [new_node]
 
 
-# select-nr-of-nodes disabled
+# select-nr-of-nodes style
 # displayed nodes
 # list for select item
 def calculateNrOfNodes(all_nodes):
     nodes_to_display = all_nodes
     steps = 50
     if all_nodes <= 500:
-        return True, nodes_to_display, []
+        return {'width': 300, 'visibility': 'hidden'}, nodes_to_display, []
     if all_nodes > 1000:
         steps = 100
     if all_nodes > 2000:
@@ -286,16 +286,19 @@ def calculateNrOfNodes(all_nodes):
 
     nodes_list.append({'label': all_nodes, 'value': all_nodes})
 
-    return False, nodes_to_display, nodes_list
+    return {'width': 300, 'visibility': 'visible'}, nodes_to_display, nodes_list
 
 
 @app.callback(
     Input('input-dropdown', 'value'),
     Output('knowledge-graph', 'elements'),
+    Output('knowledge-graph-fallback', 'elements'),
+    Output('knowledge-graph', 'style'),
+    Output('knowledge-graph-fallback', 'style'),
     Output('question-graph', 'elements'),
     Output('open-kg', 'disabled'),
     Output('open-qg', 'disabled'),
-    Output('select-nr-of-nodes', 'disabled'),
+    Output('select-nr-of-nodes', 'style'),
     Output('select-nr-of-nodes', 'value'),
     Output('select-nr-of-nodes', 'options'),
 )
@@ -313,19 +316,35 @@ def load_question_files(value):
         graph_ = generate_question_graph_v2(nlp(gr[1]))
 
         nodes_select_enabled, nodes_to_display, nodes_list = calculateNrOfNodes(nr_of_edges)
-        return graph_utils.get_dash_graph(
-            nodes_to_display), graph_, False, False, nodes_select_enabled, nodes_to_display, nodes_list
+
+        style = {
+            "width": "100%",
+            "height": "calc(100vh - 150px - 50px)",
+        }
+        normal_style = dict(style)
+        fallback_style = dict(style)
+        if nr_of_edges > 500:
+            normal_style['display'] = 'none'
+        else:
+            fallback_style['display'] = 'none'
+
+        knowledge_graph = graph_utils.get_dash_graph(nodes_to_display)
+
+        return knowledge_graph, knowledge_graph, normal_style, fallback_style, graph_, \
+               False, False, nodes_select_enabled, nodes_to_display, nodes_list
 
 
 @app.callback(
     Input('select-nr-of-nodes', 'value'),
     State('knowledge-graph', 'elements'),
     Output('knowledge-graph', 'elements'),
+    Output('knowledge-graph-fallback', 'elements'),
 )
 def load_question_files_with_more_nodes(nr_of_nodes, knowledge_graph_elements):
     if knowledge_graph_elements is not None:
-        return graph_utils.get_dash_graph(nr_of_nodes)
-    return knowledge_graph_elements
+        nodes = graph_utils.get_dash_graph(nr_of_nodes)
+        return nodes, nodes
+    return knowledge_graph_elements, knowledge_graph_elements
 
 
 @app.callback(

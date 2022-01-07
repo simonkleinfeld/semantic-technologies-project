@@ -13,7 +13,6 @@ knowledge_graph_layout = html.Div([
                              clearable=False,
                              searchable=True,
                              style={'width': 300},
-                             disabled=True
                              ),
             ]))),
     dbc.Row(
@@ -30,6 +29,7 @@ knowledge_graph_layout = html.Div([
                 style={
                     "width": "100%",
                     "height": "calc(100vh - 150px - 50px)",
+                    "display": "none"
                 },
                 stylesheet=[
                     {'selector': 'edge', 'style': {'label': 'data(label)', 'curve-style': 'haystack',
@@ -40,6 +40,29 @@ knowledge_graph_layout = html.Div([
                     {'selector': 'node', 'style': {'label': 'data(label)', 'background-color': '#30c9bc'},
                      'text-wrap': 'wrap'},
                 ]
-            ), width=12)]
-        )
+            ), width=12),
+
+            dbc.Col(cyto.Cytoscape(
+                id='knowledge-graph-fallback',
+                layout={
+                    'name': 'concentric',
+                },
+                style={
+                    "width": "100%",
+                    "height": "calc(100vh - 150px - 50px)",
+                    "display": "none"
+                },
+                stylesheet=[
+                    {'selector': 'edge', 'style': {'label': 'data(label)', 'curve-style': 'haystack',
+                                                   'haystack-radius': 0,
+                                                   'width': 5,
+                                                   'opacity': 0.5,
+                                                   'line-color': '#a8eae5'}, 'text-wrap': 'wrap'},
+                    {'selector': 'node', 'style': {'label': 'data(label)', 'background-color': '#30c9bc'},
+                     'text-wrap': 'wrap'},
+                ]
+            ), width=12)
+
+        ]
+    )
 ])
