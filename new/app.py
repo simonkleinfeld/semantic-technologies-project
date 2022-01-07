@@ -7,6 +7,7 @@ import spacy
 from dash import Input, Output, State, html
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
+from new.view_export_layout import view_export_layout
 from new.graph_sent_merge_filter_approach import generate_question_graph_v2, export_qg_with_kg_annotations
 from new.graph_utils import GraphUtils
 from new.knowledge_graph_layout import knowledge_graph_layout
@@ -24,6 +25,7 @@ graph_ = None
 
 nlp = spacy.load("en_core_web_sm")
 graph_utils = GraphUtils()
+graph_utils_export = GraphUtils()
 app.title = "Question understanding interface"
 app.layout = html.Div([
     dbc.Row(
@@ -51,6 +53,9 @@ app.layout = html.Div([
             width=2),
         dbc.Col(
             dbc.Button("Open question graph", id="open-qg", n_clicks=0, disabled=True)
+            , width=2),
+        dbc.Col(
+            dbc.Button("View Export", id="open-view-export", n_clicks=0)
             , width=2)
     ], justify="center", align="around", style={"margin": "8px"}),
     dbc.Modal(
@@ -74,6 +79,16 @@ app.layout = html.Div([
         id="modal-qg",
         fullscreen=True,
     ),
+    dbc.Modal(
+        [
+            dbc.ModalHeader(dbc.ModalTitle("View Export")),
+            dbc.ModalBody(view_export_layout),
+            dbc.ModalFooter(
+                "Select an export with the select item above")
+        ],
+        id="modal-export",
+        fullscreen=True,
+    ),
     dbc.Offcanvas(
         children=[
             html.P("Welcome to the question understanding interface, following features are currently supported"),
@@ -83,8 +98,8 @@ app.layout = html.Div([
                     html.Li("Visualizing a subset of a knowledge graph, corresponding to the question"),
                     html.Li("Generating a question graph for this question"),
                     html.Li("Editing the generated question graph"),
-                    html.Li("Export the question graph to the local filesystem")
-
+                    html.Li("Export the question graph to the local filesystem"),
+                    html.Li("The exported question graph can be displayed using the view export button"),
                 ]
 
             ),
@@ -354,6 +369,13 @@ def load_question_files_with_more_nodes(nr_of_nodes, knowledge_graph_elements):
 def open_kg(n_clicks):
     return n_clicks > 0
 
+@app.callback(
+    Output("modal-export", "is_open"),
+    Input("open-view-export", "n_clicks")
+)
+def open_export(n_clicks):
+    return n_clicks > 0
+
 
 @app.callback(
     Output("modal-qg", "is_open"),
@@ -370,6 +392,16 @@ def open_qg(n_clicks):
 )
 def open_qg(n_clicks):
     return n_clicks > 0
+
+
+@app.callback(
+    Output("view-export-graph", "elements"),
+    Input("select-export", "value")
+)
+def generate_export_graph(export_file):
+    edges, _ = graph_utils_export.load_file(export_file)
+
+    return graph_utils_export.get_dash_graph(edges)
 
 
 @app.callback(
