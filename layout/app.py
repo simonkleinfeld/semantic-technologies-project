@@ -7,12 +7,12 @@ import spacy
 from dash import Input, Output, State, html
 from dash_extensions.enrich import DashProxy, MultiplexerTransform
 
-from new.view_export_layout import view_export_layout
-from new.graph_sent_merge_filter_approach import generate_question_graph_v2, export_qg_with_kg_annotations
-from new.graph_utils import GraphUtils
-from new.knowledge_graph_layout import knowledge_graph_layout
-from new.question_graph_layout import question_graph_layout
-from new.select_question import question_select
+from layout.view_export_layout import view_export_layout
+from layout.graph_sent_merge_filter_approach import generate_question_graph_v2, export_qg_with_kg_annotations
+from layout.graph_utils import GraphUtils
+from layout.knowledge_graph_layout import knowledge_graph_layout
+from layout.question_graph_layout import question_graph_layout
+from layout.select_question import question_select
 
 ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
 
@@ -55,7 +55,7 @@ app.layout = html.Div([
             dbc.Button("Open question graph", id="open-qg", n_clicks=0, disabled=True)
             , width=2),
         dbc.Col(
-            dbc.Button("View Export", id="open-view-export", n_clicks=0)
+            dbc.Button("View export", id="open-view-export", n_clicks=0)
             , width=2)
     ], justify="center", align="around", style={"margin": "8px"}),
     dbc.Modal(
@@ -420,4 +420,4 @@ def export_question_graph(n_clicks):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

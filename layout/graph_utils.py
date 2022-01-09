@@ -6,7 +6,7 @@ from urllib.parse import unquote, urlparse
 from Levenshtein import distance
 from SPARQLWrapper import SPARQLWrapper
 
-from new.graph import Graph
+from layout.graph import Graph
 
 
 class GraphUtils:
