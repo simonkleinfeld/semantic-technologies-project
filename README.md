@@ -11,7 +11,7 @@ A user interface is offered in which one can choose from a list of questions. Su
 ## How to use
 1. Install the requirements using the requirements.txt file
 2. Start the app.py file in the layout folder (tested with python 3.9)
-3. Open the displayed url in your webbrowser (probably http://127.0.0.1:8050/ tested with chrome)
+3. Open the displayed url in your webbrowser (probably http://127.0.0.1:8050/ tested with chrome and firefox)
 4. Select one of the questions using the select item in the middle of the screen
    1. Use the "Open knowledge graph" button to display the subset of the knowledge graph around this question
    2. Use the "Open question graph" button for generating a question graph
