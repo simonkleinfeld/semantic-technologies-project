@@ -26,7 +26,7 @@ def process_labels(uris):
 
 
 if __name__ == '__main__':
-    question_ids = [13]
+    question_ids = [18, 22, 24]
     regex = "(<.*>)\s(<.*>)\s(<.*>)"
     sparql = SPARQLWrapper("http://dbpedia.org/sparql")
 
