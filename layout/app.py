@@ -114,26 +114,25 @@ app.layout = html.Div([
 ], style={"height": "100vh", "overflowY": "hidden", "overflowX": "hidden"})
 
 
-def get_ranked_labels(question_id, data):
+def get_ranked_labels(question_id, data, node):
     if data is None or len(data) != 1:
         return [], ''
     label = data[0]['label']
-    labels = graph_utils.get_ranked_rdfs_labels(question_id, data[0]['label'])
+    labels = graph_utils.get_ranked_rdfs_labels(question_id, data[0]['label'], node)
     if label not in labels:
         labels.insert(0, {'label': label, 'value': label})
     return labels, label
 
 
-def label_callback(data, value):
+def label_callback(data, value, node):
     regex = "<(.*)><(.*)><(.*)>"
     res = re.match(regex, value)
-    print(value)
     if res is not None:
         gr = res.groups()
         qid = gr[0]
         no_selection = data is None or len(data) == 0
         select_disabled = data is None or len(data) != 1
-        labels, label = get_ranked_labels(qid, data)
+        labels, label = get_ranked_labels(qid, data, node)
         return labels, label, select_disabled, no_selection
 
 
@@ -144,7 +143,7 @@ def label_callback(data, value):
               Input('question-graph', 'selectedNodeData'),
               Input('input-dropdown', 'value'))
 def display_selected_node_data(data, value):
-    return label_callback(data, value)
+    return label_callback(data, value, True)
 
 
 @app.callback(Output('select-label-dropdown', 'options'),
@@ -155,7 +154,7 @@ def display_selected_node_data(data, value):
               Input('input-dropdown', 'value')
               )
 def display_selected_edge_data(data, value):
-    return label_callback(data, value)
+    return label_callback(data, value, False)
 
 
 @app.callback(Output('selected-node-id', 'children'),

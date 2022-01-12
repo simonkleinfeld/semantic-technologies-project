@@ -58,14 +58,19 @@ class GraphUtils:
     def get_dash_graph(self, nr_of_displayed_nodes):
         return self.graph.get_dash_graph(nr_of_displayed_nodes)
 
-    def get_rdfs_labels(self, question_id):
+    def get_rdfs_labels(self, question_id, node):
         with open('../resources/question_labels_' + str(question_id) + '.json', encoding="utf8") as json_file:
             data = json.load(json_file)
+            if node and data['node_labels'] is not None and len(data['node_labels']) > 0:
+                return data['node_labels']
+            if not node and data['edge_labels'] is not None and len(data['edge_labels']) > 0:
+                return data['edge_labels']
+
             return data['labels']
 
-    def get_ranked_rdfs_labels(self, question_id, label):
+    def get_ranked_rdfs_labels(self, question_id, label, node):
         ranked = {}
-        for rdfs_label in self.get_rdfs_labels(question_id):
+        for rdfs_label in self.get_rdfs_labels(question_id, node):
             calc_distance = distance(label, rdfs_label)
             ranked[rdfs_label] = calc_distance
         sorted_labels = sorted(ranked.items(), key=lambda x: x[1], reverse=False)
