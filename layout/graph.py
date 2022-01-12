@@ -49,17 +49,16 @@ class Graph:
             self.node_neighbors[node] = set()
             self.node_attr[node] = {"label": label, "vec": vec}
 
-
     # edge consists of (node_id, node_id)
-    def add_edge(self, edge: Tuple[str, str], label='', vec=None):
+    def add_edge(self, edge: Tuple[str, str], label='', vec=None, uri=""):
         if vec is None:
             vec = []
         u, v = edge
-        if (v not in self.node_neighbors[u] and u not in self.node_neighbors[v]):
+        if v not in self.node_neighbors[u] and u not in self.node_neighbors[v]:
             self.node_neighbors[u].add(v)
-            if (u != v):
+            if u != v:
                 self.node_neighbors[v].add(u)
-            self.edge_attr[(u, v)] = {"label": label, "vec": vec}
+            self.edge_attr[(u, v)] = {"label": label, "vec": vec, "uri": uri}
 
     def del_node(self, node: str):
         for each in list(self.neighbors(node)):
@@ -99,5 +98,5 @@ class Graph:
 
         for e in self.edge_attr:
             if e[0] in inserted_nodes and e[1] in inserted_nodes:
-                nodes.append({'data': {'source': e[0], 'target': e[1], 'label': self.edge_attr[e]['label']}})
+                nodes.append({'data': {'source': e[0], 'target': e[1], 'label': self.edge_attr[e]['label'], 'uri': self.edge_attr[e]['uri']}})
         return nodes

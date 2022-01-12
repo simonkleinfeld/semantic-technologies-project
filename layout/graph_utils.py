@@ -52,7 +52,7 @@ class GraphUtils:
                     self.graph.add_node(obj, s)
                     existing_nodes.add(obj)
                 p = self.convert_uri_to_string_label(pred)
-                self.graph.add_edge((subject, obj), p)
+                self.graph.add_edge((subject, obj), p, None, pred)
         return lines_count, rdf_list
 
     def get_dash_graph(self, nr_of_displayed_nodes):

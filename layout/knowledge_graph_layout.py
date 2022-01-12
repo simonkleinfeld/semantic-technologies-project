@@ -14,6 +14,8 @@ knowledge_graph_layout = html.Div([
                              searchable=True,
                              style={'width': 300},
                              ),
+                html.Div("Selected id: "),
+                html.Div(id="selected-node-id")
             ]))),
     dbc.Row(
         children=[

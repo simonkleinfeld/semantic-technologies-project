@@ -46,8 +46,6 @@ question_graph_layout = html.Div([
             dbc.ModalBody([
                 dbc.InputGroup(
                     [
-                        dbc.InputGroupText("Id"),
-                        dbc.Input(placeholder="Node id", id="new-node-id-input"),
                         dbc.InputGroupText("Label"),
                         dbc.Input(placeholder="Label", id="new-node-label-input"),
                         dbc.Button("Add node", id="add-new-node-button", n_clicks=0)
@@ -78,8 +76,6 @@ question_graph_layout = html.Div([
                 ),
                 dbc.InputGroup(
                     [
-                        dbc.InputGroupText("Id"),
-                        dbc.Input(placeholder="Id", id="new-edge-id-input"),
                         dbc.InputGroupText("Label"),
                         dbc.Input(placeholder="Label", id="new-edge-label-input"),
                         dbc.Button("Add edge", id="add-new-edge-button", n_clicks=0)
