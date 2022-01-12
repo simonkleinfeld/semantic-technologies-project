@@ -45,16 +45,13 @@ class GraphUtils:
                 rdf_list.append((subject, pred, obj))
                 if subject not in existing_nodes:
                     s = self.convert_uri_to_string_label(subject)
-                    sl = s.split(" ")
-                    self.graph.add_node(subject, subject)
+                    self.graph.add_node(subject, s)
                     existing_nodes.add(subject)
                 if obj not in existing_nodes:
                     s = self.convert_uri_to_string_label(obj)
-                    sl = s.split(" ")
                     self.graph.add_node(obj, s)
                     existing_nodes.add(obj)
                 p = self.convert_uri_to_string_label(pred)
-                pl = p.split(" ")
                 self.graph.add_edge((subject, obj), p)
         return lines_count, rdf_list
 
