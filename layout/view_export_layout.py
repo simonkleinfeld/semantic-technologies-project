@@ -21,17 +21,6 @@ def get_export_files():
 
 view_export_layout = html.Div([
     dbc.Row(
-        dbc.Col(
-            dbc.Nav([
-                dcc.Dropdown(id='select-export',
-                             placeholder='Select export file',
-                             clearable=False,
-                             searchable=True,
-                             options=get_export_files(),
-                             style={'width': 300},
-                             ),
-            ]))),
-    dbc.Row(
         children=[
             dbc.Col(cyto.Cytoscape(
                 id='view-export-graph',

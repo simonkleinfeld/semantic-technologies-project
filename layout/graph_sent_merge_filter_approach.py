@@ -15,11 +15,11 @@ def extract_verb_constructions_from_sent(doc):
     contains_no_verbs = True
     for tok in doc:
         if tok.dep_ == 'ROOT' and tok.pos_ == 'VERB':
-            print("Root is verb")
+            #print("Root is verb")
             root_verb = True
             root_verb_tok = tok
         if tok.pos_ == 'VERB':
-            print("Contains verbs")
+            #print("Contains verbs")
             contains_no_verbs = False
     if root_verb:
         triple = [None, None, None, root_verb_tok.text, None]
@@ -34,7 +34,7 @@ def extract_verb_constructions_from_sent(doc):
         verb_constructions.append((triple, root_verb_tok.text))
     else:
         if contains_no_verbs:
-            print("No Verbs Looking for AUX")
+            #print("No Verbs Looking for AUX")
             for tok in doc:
                 if tok.pos_ == 'AUX':
                     triple = [tok.text, None, None, None]
@@ -48,7 +48,7 @@ def extract_verb_constructions_from_sent(doc):
                     triple = list(filter(lambda a: a != None, triple))
                     verb_constructions.append((triple, tok.text))
         else:
-            print("Looking for verbs")
+            #print("Looking for verbs")
             for tok in doc:
                 if tok.pos_ == 'VERB':
                     triple = [None, None, None, root_verb_tok.text, None]
@@ -151,13 +151,13 @@ def extract_particles_and_adpositions_from_sent(doc):
 def generate_question_graph_v2(doc):
     linear_graph = construct_linear_sent_graph(doc)
     entities_str_lab = construct_entities_list(doc)
-    print(entities_str_lab)
+    #print(entities_str_lab)
     chunk_root_list = get_noun_chunk_list(doc)
-    print(chunk_root_list)
+    #print(chunk_root_list)
     verb_constructions = extract_verb_constructions_from_sent(doc)
-    print(verb_constructions)
+    #print(verb_constructions)
     part_adposition_list = extract_particles_and_adpositions_from_sent(doc)
-    print(part_adposition_list)
+    #print(part_adposition_list)
     for ent in entities_str_lab:
         linear_graph = merge_items(linear_graph, ent[0], ent[1])
     for chunk in chunk_root_list:
@@ -182,12 +182,11 @@ def convert_uri_to_string_label(uri):
 
 
 def write_uri_list_to_file(uri_list, file_id):
-    print(uri_list)
     file_name = "qg_output_{}.nxhd".format(file_id)
     file_dir = os.path.dirname(os.path.realpath('__file__'))
     file_path = os.path.join(file_dir, '..\\output\\')
     file_path = file_path + file_name
-    file_path = file_path.replace("\\new\\..\\", "\\")
+    file_path = file_path.replace("\\layout\\..\\", "\\")
     f = open(file_path, "w")
     for l in uri_list:
         total_str = ""
@@ -242,8 +241,6 @@ def export_qg_with_kg_annotations(linear_qg, rdf_triples, file_id):
             continue
         else:
             kg_qg_list.append(best_matching_triple)
-    print(len(potential_uri_list))
-    print(len(kg_qg_list))
     return write_uri_list_to_file(kg_qg_list, file_id)
 
 

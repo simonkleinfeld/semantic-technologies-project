@@ -14,7 +14,7 @@ from layout.knowledge_graph_layout import knowledge_graph_layout
 from layout.question_graph_layout import question_graph_layout
 from layout.select_question import question_select
 from layout.view_export_layout import view_export_layout
-
+from os import path
 ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
 
 app = DashProxy(prevent_initial_callbacks=True, transforms=[MultiplexerTransform()],
@@ -56,7 +56,7 @@ app.layout = html.Div([
             dbc.Button("Open question graph", id="open-qg", n_clicks=0, disabled=True)
             , width=2),
         dbc.Col(
-            dbc.Button("View export", id="open-view-export", n_clicks=0)
+            dbc.Button("View export", id="open-view-export", n_clicks=0, disabled=True)
             , width=2)
     ], justify="center", align="around", style={"margin": "8px"}),
     dbc.Modal(
@@ -318,6 +318,7 @@ def calculate_nr_of_nodes(all_nodes):
     Output('question-graph', 'elements'),
     Output('open-kg', 'disabled'),
     Output('open-qg', 'disabled'),
+    Output('open-view-export', 'disabled'),
     Output('select-nr-of-nodes', 'style'),
     Output('select-nr-of-nodes', 'value'),
     Output('select-nr-of-nodes', 'options'),
@@ -350,8 +351,10 @@ def load_question_files(value):
 
         knowledge_graph = graph_utils.get_dash_graph(nodes_to_display)
 
+        export_path = "..\\output\\qg_output_{}.nxhd".format(graph_id_)
+        is_path = path.isfile(export_path)
         return knowledge_graph, knowledge_graph, normal_style, fallback_style, graph_, \
-               False, False, nodes_select_enabled, nodes_to_display, nodes_list
+               False, False, not is_path, nodes_select_enabled, nodes_to_display, nodes_list
 
 
 @app.callback(
@@ -402,17 +405,20 @@ def open_qg(n_clicks):
 
 @app.callback(
     Output("view-export-graph", "elements"),
-    Input("select-export", "value")
+    Input("open-view-export", "n_clicks"),
 )
-def generate_export_graph(export_file):
-    edges, _ = graph_utils_export.load_file(export_file)
-
-    return graph_utils_export.get_dash_graph(edges)
+def generate_export_graph(n_clicks):
+    if n_clicks > 0:
+        global graph_id_
+        export_path = "..\\output\\qg_output_{}.nxhd".format(graph_id_)
+        edges, _ = graph_utils_export.load_file(export_path)
+        return graph_utils_export.get_dash_graph(edges)
 
 
 @app.callback(
     Input('export-button', 'n_clicks'),
     Output('question-graph-footer', 'children'),
+    Output('open-view-export', 'disabled'),
 )
 def export_question_graph(n_clicks):
     global graph_triplets_
@@ -421,8 +427,8 @@ def export_question_graph(n_clicks):
     if n_clicks > 0:
         if graph_id_ is not None and graph_triplets_ is not None and graph_ is not None:
             res = export_qg_with_kg_annotations(graph_, graph_triplets_, graph_id_)
-            return "Question graph exported to: {}".format(res)
-        return "Something went wrong"
+            return "Question graph exported to: {}".format(res), False
+        return "Something went wrong", True
 
 
 if __name__ == '__main__':

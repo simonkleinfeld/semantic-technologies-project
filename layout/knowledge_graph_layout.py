@@ -14,9 +14,8 @@ knowledge_graph_layout = html.Div([
                              searchable=True,
                              style={'width': 300},
                              ),
-                html.Div("Selected id: "),
-                html.Div(id="selected-node-id")
-            ]))),
+                html.Div("Selected id: ", style={"marginLeft": 8, "marginRight": 8}),
+                html.Div(id="selected-node-id")], style={"margin" : 8}))),
     dbc.Row(
         children=[
             dbc.Col(cyto.Cytoscape(

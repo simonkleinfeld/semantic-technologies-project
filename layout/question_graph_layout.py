@@ -16,7 +16,7 @@ question_graph_layout = html.Div([
                 html.Button('Delete', id='delete-button', n_clicks=0, disabled=True),
                 html.Button('Add nodes/edges', id='add-button', n_clicks=0, disabled=False),
                 html.Button('Export', id='export-button', n_clicks=0, disabled=False),
-            ]))),
+            ], style={"margin": 8}))),
     dbc.Row(
         children=[
             dbc.Col(cyto.Cytoscape(
