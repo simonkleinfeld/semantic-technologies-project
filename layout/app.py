@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+import copy
+import os
 import re
 import ssl
 import time
+from copy import deepcopy
+from pathlib import Path
 
 import dash_bootstrap_components as dbc
 import spacy
@@ -334,8 +338,8 @@ def load_question_files(value):
         file = gr[2]
         nr_of_edges, graph_triplets_ = graph_utils.load_file("../resources/" + file)
         graph_id_ = gr[0]
-        graph_ = generate_question_graph_v2(nlp(gr[1]))
-
+        graph_ = copy.deepcopy(generate_question_graph_v2(nlp(gr[1])))
+        gra = copy.deepcopy(graph_)
         nodes_select_enabled, nodes_to_display, nodes_list = calculate_nr_of_nodes(nr_of_edges)
 
         style = {
@@ -350,10 +354,11 @@ def load_question_files(value):
             fallback_style['display'] = 'none'
 
         knowledge_graph = graph_utils.get_dash_graph(nodes_to_display)
-
-        export_path = "..\\output\\qg_output_{}.nxhd".format(graph_id_)
+        print(len(graph_))
+        parent_dir = Path(os.getcwd()).parent
+        export_path = os.path.join(parent_dir, 'output', "qg_output_{}.nxhd".format(graph_id_))
         is_path = path.isfile(export_path)
-        return knowledge_graph, knowledge_graph, normal_style, fallback_style, graph_, \
+        return knowledge_graph, knowledge_graph, normal_style, fallback_style, gra, \
                False, False, not is_path, nodes_select_enabled, nodes_to_display, nodes_list
 
 
@@ -410,7 +415,7 @@ def open_qg(n_clicks):
 def generate_export_graph(n_clicks):
     if n_clicks > 0:
         global graph_id_
-        export_path = "..\\output\\qg_output_{}.nxhd".format(graph_id_)
+        export_path = os.path.join(Path(os.getcwd()).parent, 'output', "qg_output_{}.nxhd".format(graph_id_))
         edges, _ = graph_utils_export.load_file(export_path)
         return graph_utils_export.get_dash_graph(edges)
 
@@ -426,8 +431,8 @@ def export_question_graph(n_clicks):
     global graph_
     if n_clicks > 0:
         if graph_id_ is not None and graph_triplets_ is not None and graph_ is not None:
-            res = export_qg_with_kg_annotations(graph_, graph_triplets_, graph_id_)
-            return "Question graph exported to: {}".format(res), False
+            res, triple_number = export_qg_with_kg_annotations(graph_, graph_triplets_, graph_id_)
+            return "Question graph exported to: {} with {} triples".format(res, triple_number), False
         return "Something went wrong", True
 
 

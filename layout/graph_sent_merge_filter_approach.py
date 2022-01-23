@@ -4,6 +4,7 @@ from layout.graph_utils import Graph
 from thefuzz import fuzz
 import spacy
 import os
+from pathlib import Path
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -167,6 +168,7 @@ def generate_question_graph_v2(doc):
     for p in part_adposition_list:
         linear_graph = filter_items(linear_graph, [p], p)
     r = generate_dash_graph_from_linear(linear_graph)
+    print(r)
     return r
 
 
@@ -183,10 +185,9 @@ def convert_uri_to_string_label(uri):
 
 def write_uri_list_to_file(uri_list, file_id):
     file_name = "qg_output_{}.nxhd".format(file_id)
-    file_dir = os.path.dirname(os.path.realpath('__file__'))
-    file_path = os.path.join(file_dir, '..\\output\\')
-    file_path = file_path + file_name
-    file_path = file_path.replace("\\layout\\..\\", "\\")
+    # assume app.py is executed in layout as cwd
+    parent_dir = Path(os.getcwd()).parent
+    file_path = os.path.join(parent_dir, 'output', file_name)
     f = open(file_path, "w")
     for l in uri_list:
         total_str = ""
@@ -196,7 +197,7 @@ def write_uri_list_to_file(uri_list, file_id):
         total_str += "\n"
         f.write(total_str)
     f.close()
-    return file_path
+    return file_path, len(uri_list)
 
 
 def export_qg_with_kg_annotations(linear_qg, rdf_triples, file_id):
@@ -212,7 +213,7 @@ def export_qg_with_kg_annotations(linear_qg, rdf_triples, file_id):
             f_s = fuzz.ratio(label, s)
             f_p = fuzz.ratio(label, p)
             f_o = fuzz.ratio(label, o)
-            if f_s > 50 or f_p > 50 or f_o > 50:
+            if f_s > 45 or f_p > 45 or f_o > 45:
                 potential_uri_list.append(((s,k[0]),(p,k[1]),(o,k[2])))
     kg_qg_list = []
     for pot in potential_uri_list:
@@ -221,7 +222,7 @@ def export_qg_with_kg_annotations(linear_qg, rdf_triples, file_id):
         o = pot[2]
         linear_triple = []
         best_matching_triple = None
-        best_matching_triple_score = 0.45
+        best_matching_triple_score = 0.40
         ignore_first_node = True
         for n in linear_qg:
             if n['data']['label'] == '':
@@ -233,7 +234,7 @@ def export_qg_with_kg_annotations(linear_qg, rdf_triples, file_id):
                 else:
                     f_t = (fuzz.ratio(linear_triple[1], p[0]) + fuzz.ratio(linear_triple[2], o[0]))/200.0
                     ignore_first_node = False
-                if f_t > best_matching_triple_score:
+                if f_t >= best_matching_triple_score:
                     best_matching_triple_score = f_t
                     best_matching_triple = [s[1], p[1], o[1]]
                 linear_triple.pop(0)

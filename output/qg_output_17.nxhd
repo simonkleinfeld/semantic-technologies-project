@@ -1,3 +1,5 @@
+<http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://dbpedia.org/ontology/director>	<http://dbpedia.org/resource/Mark_Cendrowski>
+<http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://dbpedia.org/ontology/creator>	<http://dbpedia.org/resource/Chuck_Lorre>
 <http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://dbpedia.org/ontology/creator>	<http://dbpedia.org/resource/Bill_Prady>
 <http://dbpedia.org/resource/Sheldon_Cooper>	<http://dbpedia.org/ontology/series>	<http://dbpedia.org/resource/The_Big_Bang_Theory>
 <http://dbpedia.org/resource/Leonard_Hofstadter>	<http://dbpedia.org/ontology/series>	<http://dbpedia.org/resource/The_Big_Bang_Theory>
@@ -38,5 +40,7 @@
 <http://dbpedia.org/resource/The_Werewolf_Transformation>	<http://dbpedia.org/ontology/series>	<http://dbpedia.org/resource/The_Big_Bang_Theory>
 <http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://xmlns.com/foaf/0.1/isPrimaryTopicOf>	<http://en.wikipedia.org/wiki/The_Big_Bang_Theory>
 <http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://www.w3.org/ns/prov#wasDerivedFrom>	<http://en.wikipedia.org/wiki/The_Big_Bang_Theory?oldid=683670576>
+<http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://dbpedia.org/ontology/director>	<http://dbpedia.org/resource/Mark_Cendrowski>
 <http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://xmlns.com/foaf/0.1/homepage>	<http://www.cbs.com/shows/big_bang_theory/>
+<http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://dbpedia.org/ontology/creator>	<http://dbpedia.org/resource/Chuck_Lorre>
 <http://dbpedia.org/resource/The_Big_Bang_Theory>	<http://dbpedia.org/ontology/creator>	<http://dbpedia.org/resource/Bill_Prady>
